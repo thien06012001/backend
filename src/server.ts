@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import { swaggerSpec, swaggerUi } from 'utils/swagger';
 import { errorHandler } from 'utils/error.handler';
 import logger from 'utils/logger';
 import router from 'router';
@@ -35,12 +34,10 @@ server.options('*', cors(corsOptions));
 // Middleware for parsing JSON and URL-encoded bodies
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
-server.all('*', (req, res) => {
-  res.status(404).json({ message: 'Sorry! Page not found' });
-});
-server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Use the router with the /api prefix
 server.use('/api', router);
 server.use(errorHandler);
-
+server.all('*', (req, res) => {
+  res.status(404).json({ message: 'Sorry! Page not found' });
+});
 export { server };

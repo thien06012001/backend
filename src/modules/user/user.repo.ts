@@ -1,20 +1,20 @@
 import { DB } from 'databases/mysql';
-import { User } from 'interfaces/user.interface';
+import { IUserRequest, User } from 'interfaces/user.interface';
 
 export const repo = {
-  getUserById: async (userId: string | undefined): Promise<User | null> => {
+  getById: async (userId: string | undefined): Promise<User | null> => {
     return await DB.Users.findOne({ where: { id: userId } });
   },
-  getAllUsers: async (): Promise<User[]> => {
+  getAll: async (): Promise<User[]> => {
     return await DB.Users.findAll();
   },
-  createUser: async (user: User): Promise<User> => {
+  create: async (user: IUserRequest): Promise<User> => {
     return await DB.Users.create(user);
   },
-  updateUser: async (userId: string, user: User): Promise<[number]> => {
+  update: async (userId: string, user: IUserRequest): Promise<[number]> => {
     return await DB.Users.update(user, { where: { id: userId } });
   },
-  deleteUser: async (userId: string): Promise<number> => {
+  delete: async (userId: string): Promise<number> => {
     return await DB.Users.destroy({ where: { id: userId } });
   },
 };

@@ -9,7 +9,9 @@
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:fix": "npm run lint -- --fix",
     "migration:generate": "sequelize migration:generate --name",
-    "migration": "sequelize db:migrate"
+    "migration": "sequelize db:migrate",
+    "sync:db": "ts-node -r tsconfig-paths/register --transpile-only src/databases/mysql/models/index.ts",
+    "seed:db": "ts-node -r tsconfig-paths/register --transpile-only src/databases/mysql/seeders/index.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

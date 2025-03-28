@@ -1,9 +1,9 @@
-export interface User {
-  id?: string;
+import { IBase } from './base.interface';
+export interface IUserRequest {
   email: string;
   name: string;
   username: string;
   password: string;
-  created_at: string | undefined;
-  updated_at: string | undefined;
 }
+
+export interface User extends IBase, IUserRequest {}

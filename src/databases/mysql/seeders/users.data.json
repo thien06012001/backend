@@ -1,0 +1,62 @@
+[
+  {
+    "email": "alice@example.com",
+    "name": "Alice Johnson",
+    "username": "alicej",
+    "password": "hashedpassword1"
+  },
+  {
+    "email": "bob@example.com",
+    "name": "Bob Smith",
+    "username": "bobsmith",
+    "password": "hashedpassword2"
+  },
+  {
+    "email": "carol@example.com",
+    "name": "Carol White",
+    "username": "carolw",
+    "password": "hashedpassword3"
+  },
+  {
+    "email": "dave@example.com",
+    "name": "Dave Brown",
+    "username": "daveb",
+    "password": "hashedpassword4"
+  },
+  {
+    "email": "eva@example.com",
+    "name": "Eva Green",
+    "username": "evag",
+    "password": "hashedpassword5"
+  },
+  {
+    "email": "frank@example.com",
+    "name": "Frank Miller",
+    "username": "frankm",
+    "password": "hashedpassword6"
+  },
+  {
+    "email": "grace@example.com",
+    "name": "Grace Lee",
+    "username": "gracel",
+    "password": "hashedpassword7"
+  },
+  {
+    "email": "harry@example.com",
+    "name": "Harry Potter",
+    "username": "hpotter",
+    "password": "hashedpassword8"
+  },
+  {
+    "email": "ivy@example.com",
+    "name": "Ivy Taylor",
+    "username": "ivyt",
+    "password": "hashedpassword9"
+  },
+  {
+    "email": "john@example.com",
+    "name": "John Doe",
+    "username": "johnd",
+    "password": "hashedpassword10"
+  }
+]
