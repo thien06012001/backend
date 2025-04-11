@@ -1,5 +1,8 @@
 import { User } from 'interfaces/user.interface';
+
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+
+import { EventModel } from './event.model';
 
 export type UserCreationAttributes = Optional<User, 'id' | 'username'>;
 
@@ -62,6 +65,18 @@ export default function (sequelize: Sequelize): typeof UserModel {
       timestamps: true,
     },
   );
+
+  UserModel.hasMany(EventModel, {
+    foreignKey: 'owner_id',
+    as: 'ownedEvents',
+  });
+
+  // Participating events (many-to-many)
+  UserModel.belongsToMany(EventModel, {
+    through: 'event_participants',
+    foreignKey: 'user_id',
+    as: 'participatingEvents',
+  });
 
   return UserModel;
 }
