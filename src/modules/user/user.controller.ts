@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+
 import {
   getAllUsers,
   getUserById,
@@ -6,6 +7,7 @@ import {
   deleteUser,
   createUser,
 } from './user.service';
+
 export const getUserByIdController = async (
   req: Request,
   res: Response,
@@ -18,6 +20,7 @@ export const getUserByIdController = async (
     next(error);
   }
 };
+
 export const getAllUsersController = async (
   req: Request,
   res: Response,
@@ -30,6 +33,7 @@ export const getAllUsersController = async (
     next(error);
   }
 };
+
 export const createUserController = async (
   req: Request,
   res: Response,
@@ -42,6 +46,7 @@ export const createUserController = async (
     next(error);
   }
 };
+
 export const updateUserController = async (
   req: Request,
   res: Response,
@@ -54,6 +59,7 @@ export const updateUserController = async (
     next(error);
   }
 };
+
 export const deleteUserController = async (
   req: Request,
   res: Response,

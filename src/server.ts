@@ -34,6 +34,7 @@ server.options('*', cors(corsOptions));
 // Middleware for parsing JSON and URL-encoded bodies
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
+
 // Use the router with the /api prefix
 server.use('/api', router);
 server.use(errorHandler);

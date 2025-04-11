@@ -4,6 +4,7 @@ export interface IUserRequest {
   name: string;
   username: string;
   password: string;
+  phone?: string;
 }
 
 export interface User extends IBase, IUserRequest {}
