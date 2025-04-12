@@ -7,6 +7,7 @@ export interface IEventRequest {
   start_time: string;
   end_time: string;
   owner_id: string;
+  is_public?: boolean; // Default value is true
 }
 
 export interface Event extends IBase, IEventRequest {

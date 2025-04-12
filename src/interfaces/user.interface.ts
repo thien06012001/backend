@@ -12,4 +12,10 @@ export interface IUserRequest {
 export interface User extends IBase, IUserRequest {
   ownedEvents?: Event[]; // Events this user owns
   participatingEvents?: Event[]; // Events this user participates in
+  role: UserRole;
+}
+export enum UserRole {
+  ADMIN = 'admin',
+  ORGANIZER = 'organizer',
+  ATTENDEE = 'attendee',
 }

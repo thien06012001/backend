@@ -17,7 +17,7 @@ export class EventModel
   public owner_id!: string;
   public created_at: string | undefined;
   public updated_at: string | undefined;
-
+  public readonly is_public: boolean = true; // Default value
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -46,6 +46,11 @@ export default function (sequelize: Sequelize): typeof EventModel {
         allowNull: false,
         type: DataTypes.UUID,
       },
+      is_public: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+      },
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
     },
@@ -65,7 +70,7 @@ export default function (sequelize: Sequelize): typeof EventModel {
 
   // Participants relationship (many-to-many)
   EventModel.belongsToMany(UserModel, {
-    through: 'event_participants',
+    through: 'event_participant',
     foreignKey: 'event_id',
     as: 'participants',
   });

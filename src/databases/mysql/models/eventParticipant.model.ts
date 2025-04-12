@@ -28,7 +28,7 @@ export default function (sequelize: Sequelize): typeof EventParticipantModel {
       },
     },
     {
-      tableName: 'event_participants',
+      tableName: 'event_participant',
       sequelize,
       timestamps: true,
       createdAt: 'created_at',

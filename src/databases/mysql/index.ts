@@ -10,6 +10,7 @@ import {
   NODE_ENV,
 } from 'config';
 import logger from 'utils/logger';
+import eventModel from './models/event.model';
 
 const sequelize = new Sequelize.Sequelize(
   DB_NAME as string,
@@ -42,6 +43,7 @@ sequelize.authenticate();
 
 export const DB = {
   Users: userModel(sequelize),
+  Events: eventModel(sequelize),
   sequelize, // connection instance (RAW queries)
   Sequelize, // library
 };
