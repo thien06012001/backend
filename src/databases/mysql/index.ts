@@ -2,6 +2,7 @@ import Sequelize from 'sequelize';
 
 import userModel from './models/user.model';
 import eventModel from './models/event.model';
+import eventParticipantModel from './models/eventParticipant.model';
 
 import {
   DB_DIALECT,
@@ -13,7 +14,7 @@ import {
   NODE_ENV,
 } from 'config';
 import logger from 'utils/logger';
-import eventParticipantModel from './models/eventParticipant.model';
+
 import { setupAssociations } from './associations';
 
 const sequelize = new Sequelize.Sequelize(
@@ -57,8 +58,9 @@ setupAssociations({
 });
 
 export const DB = {
-  Users: userModel(sequelize),
-  Events: eventModel(sequelize),
+  Users: UserModel,
+  Events: EventModel,
+  EventParticipants: EventParticipantModel,
   sequelize, // connection instance (RAW queries)
   Sequelize, // library
 };

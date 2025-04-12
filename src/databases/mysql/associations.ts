@@ -1,9 +1,9 @@
-export function setupAssociations(models: {
+export const setupAssociations = (models: {
   UserModel: any;
   EventModel: any;
   EventParticipantModel: any;
-}) {
-  const { UserModel, EventModel } = models;
+}) => {
+  const { UserModel, EventModel, EventParticipantModel } = models;
 
   // User to Event (owner) relationship
   UserModel.hasMany(EventModel, {
@@ -19,15 +19,15 @@ export function setupAssociations(models: {
 
   // User to Event (participants) relationship
   UserModel.belongsToMany(EventModel, {
-    through: 'event_participant',
+    through: EventParticipantModel,
     foreignKey: 'user_id',
     as: 'participatingEvents', // Match your interface
   });
 
   // Event to User (participants) relationship
   EventModel.belongsToMany(UserModel, {
-    through: 'event_participant',
+    through: EventParticipantModel,
     foreignKey: 'event_id',
     as: 'participants',
   });
-}
+};
