@@ -15,6 +15,7 @@ export class EventModel
   public start_time!: string;
   public end_time!: string;
   public owner_id!: string;
+  public visibility!: 'public' | 'private';
   public created_at: string | undefined;
   public updated_at: string | undefined;
   public readonly is_public: boolean = true; // Default value
@@ -50,6 +51,10 @@ export default function (sequelize: Sequelize): typeof EventModel {
         allowNull: false,
         type: DataTypes.BOOLEAN,
         defaultValue: true,
+      },
+      visibility: {
+        allowNull: false,
+        type: DataTypes.ENUM('public', 'private'),
       },
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,

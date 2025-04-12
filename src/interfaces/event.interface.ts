@@ -5,6 +5,7 @@ import { User } from './user.interface';
 export interface IEventRequest {
   name: string;
   start_time: string;
+  visibility: string; // 'public' or 'private'
   end_time: string;
   owner_id: string;
   is_public?: boolean; // Default value is true
