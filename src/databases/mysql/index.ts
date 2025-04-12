@@ -1,5 +1,8 @@
 import Sequelize from 'sequelize';
+
 import userModel from './models/user.model';
+import eventModel from './models/event.model';
+
 import {
   DB_DIALECT,
   DB_HOST,
@@ -10,7 +13,8 @@ import {
   NODE_ENV,
 } from 'config';
 import logger from 'utils/logger';
-import eventModel from './models/event.model';
+import eventParticipantModel from './models/eventParticipant.model';
+import { setupAssociations } from './associations';
 
 const sequelize = new Sequelize.Sequelize(
   DB_NAME as string,
@@ -40,6 +44,17 @@ const sequelize = new Sequelize.Sequelize(
 );
 
 sequelize.authenticate();
+
+// Initialize all models first
+const UserModel = userModel(sequelize);
+const EventModel = eventModel(sequelize);
+const EventParticipantModel = eventParticipantModel(sequelize);
+
+setupAssociations({
+  UserModel,
+  EventModel,
+  EventParticipantModel,
+});
 
 export const DB = {
   Users: userModel(sequelize),

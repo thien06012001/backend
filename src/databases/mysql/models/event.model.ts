@@ -62,18 +62,5 @@ export default function (sequelize: Sequelize): typeof EventModel {
     },
   );
 
-  // Owner relationship (one-to-many)
-  EventModel.belongsTo(UserModel, {
-    foreignKey: 'owner_id',
-    as: 'owner',
-  });
-
-  // Participants relationship (many-to-many)
-  EventModel.belongsToMany(UserModel, {
-    through: 'event_participant',
-    foreignKey: 'event_id',
-    as: 'participants',
-  });
-
   return EventModel;
 }

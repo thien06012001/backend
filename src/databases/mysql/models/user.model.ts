@@ -71,17 +71,5 @@ export default function (sequelize: Sequelize): typeof UserModel {
     },
   );
 
-  UserModel.hasMany(EventModel, {
-    foreignKey: 'owner_id',
-    as: 'ownedEvents',
-  });
-
-  // Participating events (many-to-many)
-  UserModel.belongsToMany(EventModel, {
-    through: 'event_participant',
-    foreignKey: 'user_id',
-    as: 'events',
-  });
-
   return UserModel;
 }
