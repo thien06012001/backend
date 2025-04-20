@@ -9,6 +9,8 @@ export interface IEventRequest {
   end_time: string;
   owner_id: string;
   is_public?: boolean; // Default value is true
+  location: string;
+  capacity: number;
 }
 
 export interface Event extends IBase, IEventRequest {

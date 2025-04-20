@@ -2,8 +2,6 @@ import { Event } from 'interfaces/event.interface';
 
 import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 
-import { UserModel } from './user.model';
-
 export type EvenCreationAttributes = Optional<Event, 'id' | 'name'>;
 
 export class EventModel
@@ -15,6 +13,8 @@ export class EventModel
   public start_time!: string;
   public end_time!: string;
   public owner_id!: string;
+  public location!: string;
+  public capacity!: number;
   public visibility!: 'public' | 'private';
   public created_at: string | undefined;
   public updated_at: string | undefined;
@@ -55,6 +55,15 @@ export default function (sequelize: Sequelize): typeof EventModel {
       visibility: {
         allowNull: false,
         type: DataTypes.ENUM('public', 'private'),
+      },
+      capacity: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      location: {
+        allowNull: false,
+        type: DataTypes.STRING,
       },
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
