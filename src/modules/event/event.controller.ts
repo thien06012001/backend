@@ -82,12 +82,8 @@ export const sendEventInvitationController = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { userId, message } = req.body;
-    const response = await sendEventInvitation(
-      req.params.eventId,
-      userId,
-      message,
-    );
+    const { userId } = req.body;
+    const response = await sendEventInvitation(req.params.eventId, userId);
     res.status(201).json({ message: 'Invitation sent', data: response });
   } catch (error) {
     next(error);

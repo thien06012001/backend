@@ -19,41 +19,51 @@ export const setupAssociations = (models: {
     as: 'owner',
   });
 
-  // User to Event (participants) relationship
+  // User to Event (participants) relationship - through EventParticipant
   UserModel.belongsToMany(EventModel, {
     through: EventParticipantModel,
     foreignKey: 'user_id',
-    as: 'participatingEvents', // Match your interface
+    as: 'participatingEvents',
   });
 
-  // Event to User (participants) relationship
+  // Event to User (participants) relationship - through EventParticipant
   EventModel.belongsToMany(UserModel, {
     through: EventParticipantModel,
     foreignKey: 'event_id',
     as: 'participants',
   });
 
-  // User to Invitation relationship
-  UserModel.hasMany(InvitationModel, {
+  // User to Event (invitations) relationship - through Invitation
+  UserModel.belongsToMany(EventModel, {
+    through: InvitationModel,
     foreignKey: 'user_id',
-    as: 'invitations',
+    otherKey: 'event_id',
+    as: 'invitedEvents',
   });
 
-  // Invitation to User relationship
+  // Event to User (invitations) relationship - through Invitation
+  EventModel.belongsToMany(UserModel, {
+    through: InvitationModel,
+    foreignKey: 'event_id',
+    otherKey: 'user_id',
+    as: 'invitedUsers',
+  });
+
+  // Direct access to the invitation model (the join table)
   InvitationModel.belongsTo(UserModel, {
     foreignKey: 'user_id',
-    as: 'user',
   });
 
-  // Event to Invitation relationship
-  EventModel.hasMany(InvitationModel, {
-    foreignKey: 'event_id',
-    as: 'invitations',
-  });
-
-  // Invitation to Event relationship
   InvitationModel.belongsTo(EventModel, {
     foreignKey: 'event_id',
-    as: 'event',
+  });
+
+  // For easier access to invitations from user/event
+  UserModel.hasMany(InvitationModel, {
+    foreignKey: 'user_id',
+  });
+
+  EventModel.hasMany(InvitationModel, {
+    foreignKey: 'event_id',
   });
 };

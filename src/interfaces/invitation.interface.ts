@@ -12,7 +12,6 @@ export interface IInvitationRequest {
   event_id: string;
   user_id: string;
   status?: InvitationStatus;
-  message?: string;
 }
 
 export interface Invitation extends IBase, IInvitationRequest {

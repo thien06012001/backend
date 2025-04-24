@@ -118,6 +118,10 @@ export const rejectInvitation = async (invitationId: string) => {
 export const deleteInvitation = async (invitationId: string) => {
   const invitation = await getInvitationById(invitationId);
 
+  if (!invitation) {
+    throw new CustomError('Invitation not found', 404);
+  }
+
   const deleted = await invitationRepo.delete(invitationId);
 
   if (!deleted) {

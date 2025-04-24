@@ -43,11 +43,7 @@ export const deleteEvent = async (eventId: string) => {
 };
 
 // New methods for invitation functionality
-export const sendEventInvitation = async (
-  eventId: string,
-  userId: string,
-  message?: string,
-) => {
+export const sendEventInvitation = async (eventId: string, userId: string) => {
   const event = await getEventById(eventId);
 
   // Create invitation
@@ -55,7 +51,6 @@ export const sendEventInvitation = async (
     event_id: eventId,
     user_id: userId,
     status: InvitationStatus.PENDING,
-    message,
   });
 };
 

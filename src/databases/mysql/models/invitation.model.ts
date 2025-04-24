@@ -11,7 +11,6 @@ export class InvitationModel
   public event_id!: string;
   public user_id!: string;
   public status!: InvitationStatus;
-  public message?: string;
   public created_at: string | undefined;
   public updated_at: string | undefined;
   public readonly createdAt!: Date;
@@ -46,10 +45,6 @@ export default function (sequelize: Sequelize): typeof InvitationModel {
         allowNull: false,
         type: DataTypes.ENUM(...Object.values(InvitationStatus)),
         defaultValue: InvitationStatus.PENDING,
-      },
-      message: {
-        allowNull: true,
-        type: DataTypes.TEXT,
       },
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
