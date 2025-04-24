@@ -3,6 +3,7 @@ import Sequelize from 'sequelize';
 import userModel from './models/user.model';
 import eventModel from './models/event.model';
 import eventParticipantModel from './models/eventParticipant.model';
+import invitationModel from './models/invitation.model';
 
 import {
   DB_DIALECT,
@@ -50,17 +51,20 @@ sequelize.authenticate();
 const UserModel = userModel(sequelize);
 const EventModel = eventModel(sequelize);
 const EventParticipantModel = eventParticipantModel(sequelize);
+const InvitationModel = invitationModel(sequelize);
 
 setupAssociations({
   UserModel,
   EventModel,
   EventParticipantModel,
+  InvitationModel,
 });
 
 export const DB = {
   Users: UserModel,
   Events: EventModel,
   EventParticipants: EventParticipantModel,
+  Invitations: InvitationModel,
   sequelize, // connection instance (RAW queries)
   Sequelize, // library
 };

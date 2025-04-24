@@ -5,6 +5,9 @@ import {
   createEvent,
   updateEvent,
   deleteEvent,
+  sendEventInvitation,
+  sendEventInvitations,
+  getEventInvitations,
 } from './event.service';
 
 export const getEventByIdController = async (
@@ -67,6 +70,58 @@ export const deleteEventController = async (
   try {
     const response = await deleteEvent(req.params.eventId);
     res.status(200).json({ message: 'Event deleted', data: response });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// New controllers for event invitations
+export const sendEventInvitationController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { userId, message } = req.body;
+    const response = await sendEventInvitation(
+      req.params.eventId,
+      userId,
+      message,
+    );
+    res.status(201).json({ message: 'Invitation sent', data: response });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const sendEventInvitationsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { userIds, message } = req.body;
+    const response = await sendEventInvitations(
+      req.params.eventId,
+      userIds,
+      message,
+    );
+    res.status(201).json({ message: 'Invitations sent', data: response });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getEventInvitationsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const response = await getEventInvitations(req.params.eventId);
+    res
+      .status(200)
+      .json({ message: 'Event invitations fetched', data: response });
   } catch (error) {
     next(error);
   }

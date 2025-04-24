@@ -1,8 +1,6 @@
-import { User, UserRole } from 'interfaces/user.interface';
+import { User } from 'interfaces/user.interface';
 
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
-
-import { EventModel } from './event.model';
 
 export type UserCreationAttributes = Optional<User, 'id' | 'username'>;
 
@@ -18,7 +16,7 @@ export class UserModel
   public phone: string | undefined;
   public created_at: string | undefined;
   public updated_at: string | undefined;
-  public readonly role: UserRole = UserRole.ATTENDEE; // Default role
+  public readonly role?: string; // Updated to match interface
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -42,9 +40,8 @@ export default function (sequelize: Sequelize): typeof UserModel {
         type: DataTypes.STRING,
       },
       role: {
-        allowNull: false,
-        type: DataTypes.ENUM('admin', 'organizer', 'attendee'),
-        defaultValue: 'attendee',
+        allowNull: true,
+        type: DataTypes.STRING,
       },
       username: {
         allowNull: true,
