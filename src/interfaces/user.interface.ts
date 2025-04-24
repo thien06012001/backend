@@ -5,7 +5,6 @@ import { Invitation } from './invitation.interface';
 export interface IUserRequest {
   email: string;
   name: string;
-  username: string;
   password: string;
   phone?: string;
   role?: string;

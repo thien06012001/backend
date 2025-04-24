@@ -7,7 +7,7 @@ import { CustomError } from 'utils/error.custom';
 import { hash, compare } from 'bcrypt';
 
 export const register = async (req: IUserRequest) => {
-  const { email, name, password, username, phone, role } = req;
+  const { email, name, password, phone } = req;
 
   const isUserExist = await getUserByEmail(email);
 
@@ -21,9 +21,7 @@ export const register = async (req: IUserRequest) => {
     email,
     name,
     password: hashedPassword,
-    username,
     phone,
-    role,
   });
 };
 

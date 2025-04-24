@@ -25,7 +25,7 @@ export const loginController = async (
   next: NextFunction,
 ) => {
   try {
-    const response = await login(req.body.email);
+    const response = await login(req.body);
     res.status(200).json({
       message: 'User logged in successfully',
       data: response,

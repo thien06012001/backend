@@ -19,7 +19,7 @@ export const repo = {
 
   create: async (user: IUserRequest): Promise<User> => {
     await DB.sequelize.sync();
-    return await DB.Users.create({ ...user, role: user.role ?? 'defaultRole' });
+    return await DB.Users.create({ ...user });
   },
 
   update: async (userId: string, user: IUserRequest): Promise<[number]> => {
