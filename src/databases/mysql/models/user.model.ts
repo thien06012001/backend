@@ -33,19 +33,29 @@ export default function (sequelize: Sequelize): typeof UserModel {
         allowNull: false,
         type: DataTypes.STRING,
         unique: true,
+        validate: {
+          isEmail: true,
+        },
       },
       name: {
         allowNull: false,
         type: DataTypes.STRING,
+        validate: {
+          max: 50,
+          min: 2,
+        },
       },
       role: {
         allowNull: true,
         type: DataTypes.STRING,
       },
-
       password: {
         allowNull: false,
         type: DataTypes.STRING(255),
+        validate: {
+          max: 50,
+          min: 6,
+        },
       },
       phone: {
         allowNull: true,

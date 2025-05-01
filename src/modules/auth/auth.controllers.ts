@@ -1,6 +1,5 @@
 import { login, register } from './auth.service';
 import { NextFunction, Request, Response } from 'express';
-import { getUserByEmail } from 'modules/user/user.service';
 
 export const registerController = async (
   req: Request,

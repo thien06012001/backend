@@ -37,7 +37,6 @@ export const login = async (req: Partial<IUserRequest>) => {
   if (!user) {
     throw new CustomError('Invalid email or password', 401);
   }
-
   const isPasswordValid = await compare(password, user.password);
 
   if (!isPasswordValid) {

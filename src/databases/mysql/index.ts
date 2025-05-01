@@ -4,6 +4,8 @@ import userModel from './models/user.model';
 import eventModel from './models/event.model';
 import eventParticipantModel from './models/eventParticipant.model';
 import invitationModel from './models/invitation.model';
+import postModel from './models/post.model';
+import commentModel from './models/comment.model';
 
 import {
   DB_DIALECT,
@@ -52,12 +54,16 @@ const UserModel = userModel(sequelize);
 const EventModel = eventModel(sequelize);
 const EventParticipantModel = eventParticipantModel(sequelize);
 const InvitationModel = invitationModel(sequelize);
+const PostModel = postModel(sequelize);
+const CommentModel = commentModel(sequelize);
 
 setupAssociations({
   UserModel,
   EventModel,
   EventParticipantModel,
   InvitationModel,
+  PostModel,
+  CommentModel,
 });
 
 export const DB = {
@@ -65,6 +71,8 @@ export const DB = {
   Events: EventModel,
   EventParticipants: EventParticipantModel,
   Invitations: InvitationModel,
+  Posts: PostModel,
+  Comments: CommentModel,
   sequelize, // connection instance (RAW queries)
   Sequelize, // library
 };

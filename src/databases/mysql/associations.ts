@@ -3,9 +3,17 @@ export const setupAssociations = (models: {
   EventModel: any;
   EventParticipantModel: any;
   InvitationModel: any;
+  PostModel: any;
+  CommentModel: any;
 }) => {
-  const { UserModel, EventModel, EventParticipantModel, InvitationModel } =
-    models;
+  const {
+    UserModel,
+    EventModel,
+    EventParticipantModel,
+    InvitationModel,
+    PostModel,
+    CommentModel,
+  } = models;
 
   // User to Event (owner) relationship
   UserModel.hasMany(EventModel, {
@@ -52,10 +60,12 @@ export const setupAssociations = (models: {
   // Direct access to the invitation model (the join table)
   InvitationModel.belongsTo(UserModel, {
     foreignKey: 'user_id',
+    as: 'user',
   });
 
   InvitationModel.belongsTo(EventModel, {
     foreignKey: 'event_id',
+    as: 'event',
   });
 
   // For easier access to invitations from user/event
@@ -65,5 +75,37 @@ export const setupAssociations = (models: {
 
   EventModel.hasMany(InvitationModel, {
     foreignKey: 'event_id',
+  });
+
+  // Post relationships
+  EventModel.hasMany(PostModel, {
+    foreignKey: 'event_id',
+    as: 'posts',
+  });
+
+  PostModel.belongsTo(EventModel, {
+    foreignKey: 'event_id',
+    as: 'event',
+  });
+
+  // Comment relationships
+  PostModel.hasMany(CommentModel, {
+    foreignKey: 'post_id',
+    as: 'comments',
+  });
+
+  CommentModel.belongsTo(PostModel, {
+    foreignKey: 'post_id',
+    as: 'post',
+  });
+
+  UserModel.hasMany(CommentModel, {
+    foreignKey: 'user_id',
+    as: 'comments',
+  });
+
+  CommentModel.belongsTo(UserModel, {
+    foreignKey: 'user_id',
+    as: 'user',
   });
 };
