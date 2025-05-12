@@ -5,6 +5,7 @@ export const setupAssociations = (models: {
   InvitationModel: any;
   PostModel: any;
   CommentModel: any;
+  NotificationModel: any;
 }) => {
   const {
     UserModel,
@@ -13,6 +14,7 @@ export const setupAssociations = (models: {
     InvitationModel,
     PostModel,
     CommentModel,
+    NotificationModel,
   } = models;
 
   // User to Event (owner) relationship
@@ -105,6 +107,17 @@ export const setupAssociations = (models: {
   });
 
   CommentModel.belongsTo(UserModel, {
+    foreignKey: 'user_id',
+    as: 'user',
+  });
+
+  // Notification relationships
+  UserModel.hasMany(NotificationModel, {
+    foreignKey: 'user_id',
+    as: 'notifications',
+  });
+
+  NotificationModel.belongsTo(UserModel, {
     foreignKey: 'user_id',
     as: 'user',
   });
