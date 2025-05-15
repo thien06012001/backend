@@ -1,4 +1,5 @@
 import { DB } from 'databases/mysql';
+import { get } from 'http';
 import { IUserRequest, User } from 'interfaces/user.interface';
 
 export const repo = {
@@ -30,5 +31,15 @@ export const repo = {
   delete: async (userId: string): Promise<number> => {
     await DB.sequelize.sync();
     return await DB.Users.destroy({ where: { id: userId } });
+  },
+  getEventsByUserId: async (userId: string): Promise<any> => {
+    await DB.sequelize.sync();
+
+    const user = await DB.Users.findOne({
+      where: { id: userId },
+      include: [{ model: DB.Events, as: 'ownedEvents' }],
+    });
+
+    return user;
   },
 };

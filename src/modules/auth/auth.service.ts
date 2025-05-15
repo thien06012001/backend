@@ -46,5 +46,6 @@ export const login = async (req: Partial<IUserRequest>) => {
   return {
     id: user.id,
     email: user.email,
+    role: user.role,
   };
 };

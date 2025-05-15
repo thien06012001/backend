@@ -5,12 +5,13 @@ import { Invitation } from './invitation.interface';
 export interface IEventRequest {
   name: string;
   start_time: string;
-  visibility: string; // 'public' or 'private'
   end_time: string;
   owner_id: string;
-  is_public?: boolean; // Default value is true
+  is_public: boolean; // Default value is true
   location: string;
   capacity: number;
+  description: string;
+  image_url: string;
 }
 
 export interface Event extends IBase, IEventRequest {

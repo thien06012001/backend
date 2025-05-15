@@ -11,6 +11,7 @@ export class PostModel
   public title!: string;
   public content!: string;
   public eventId!: string;
+  public userId!: string; // NEW
   public created_at: string | undefined;
   public updated_at: string | undefined;
   public readonly createdAt!: Date;
@@ -39,6 +40,15 @@ export default function (sequelize: Sequelize): typeof PostModel {
         field: 'event_id',
         references: {
           model: 'events',
+          key: 'id',
+        },
+      },
+      userId: {
+        allowNull: false,
+        type: DataTypes.UUID,
+        field: 'user_id',
+        references: {
+          model: 'users',
           key: 'id',
         },
       },

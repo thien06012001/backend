@@ -90,6 +90,17 @@ export const setupAssociations = (models: {
     as: 'event',
   });
 
+  UserModel.hasMany(PostModel, {
+    foreignKey: 'user_id',
+    as: 'posts',
+  });
+
+  // Post belongs to User
+  PostModel.belongsTo(UserModel, {
+    foreignKey: 'user_id',
+    as: 'author',
+  });
+
   // Comment relationships
   PostModel.hasMany(CommentModel, {
     foreignKey: 'post_id',

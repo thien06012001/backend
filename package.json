@@ -14,10 +14,12 @@
     "seed:db": "ts-node -r tsconfig-paths/register --transpile-only src/databases/mysql/seeders/index.ts"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.8.0",
     "@types/bcrypt": "^5.0.2",
     "@types/bun": "latest",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
+    "@types/multer": "^1.4.12",
     "@types/node": "^22.13.11",
     "@types/sequelize": "^4.28.20",
     "@types/swagger-jsdoc": "^6.0.4",
@@ -42,6 +44,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongoose": "^8.13.0",
+    "multer": "^1.4.5-lts.2",
     "mysql2": "^3.14.0",
     "sequelize": "^6.37.6",
     "sequelize-typescript": "^2.1.6",

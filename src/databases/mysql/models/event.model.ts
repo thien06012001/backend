@@ -15,10 +15,11 @@ export class EventModel
   public owner_id!: string;
   public location!: string;
   public capacity!: number;
-  public visibility!: 'public' | 'private';
   public created_at: string | undefined;
   public updated_at: string | undefined;
-  public readonly is_public: boolean = true; // Default value
+  public description!: string;
+  public image_url!: string;
+  public is_public!: boolean; // Default value
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -50,11 +51,6 @@ export default function (sequelize: Sequelize): typeof EventModel {
       is_public: {
         allowNull: false,
         type: DataTypes.BOOLEAN,
-        defaultValue: true,
-      },
-      visibility: {
-        allowNull: false,
-        type: DataTypes.ENUM('public', 'private'),
       },
       capacity: {
         allowNull: false,
@@ -63,6 +59,14 @@ export default function (sequelize: Sequelize): typeof EventModel {
       },
       location: {
         allowNull: false,
+        type: DataTypes.STRING,
+      },
+      description: {
+        allowNull: true,
+        type: DataTypes.STRING,
+      },
+      image_url: {
+        allowNull: true,
         type: DataTypes.STRING,
       },
       created_at: DataTypes.DATE,

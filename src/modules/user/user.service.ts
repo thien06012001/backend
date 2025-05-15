@@ -43,3 +43,13 @@ export const deleteUser = async (userId: string) => {
 export const getUserByEmail = async (email: string) => {
   return await repo.getByEmail(email);
 };
+
+export const getEventsByUserId = async (userId: string) => {
+  const events = await repo.getEventsByUserId(userId);
+
+  if (!events) {
+    throw new CustomError('No events found for this user', 404);
+  }
+
+  return events;
+};

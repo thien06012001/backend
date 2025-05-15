@@ -13,6 +13,7 @@ export default function (sequelize: Sequelize): typeof EventParticipantModel {
       event_id: {
         type: DataTypes.UUID,
         allowNull: false,
+        primaryKey: true, // ✅ Composite PK
         references: {
           model: 'events',
           key: 'id',
@@ -21,6 +22,7 @@ export default function (sequelize: Sequelize): typeof EventParticipantModel {
       user_id: {
         type: DataTypes.UUID,
         allowNull: false,
+        primaryKey: true, // ✅ Composite PK
         references: {
           model: 'users',
           key: 'id',

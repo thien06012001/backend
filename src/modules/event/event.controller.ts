@@ -42,7 +42,10 @@ export const createEventController = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
+    console.log('Request body:', req.body);
+
     const response = await createEvent(req.body);
+    console.log('Response:', response);
     res.status(201).json({ message: 'Event created', data: response });
   } catch (error) {
     next(error);

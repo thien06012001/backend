@@ -9,6 +9,18 @@ export const eventRepo = {
       include: [
         { model: DB.Users, as: 'owner' },
         { model: DB.Users, as: 'participants' },
+        {
+          model: DB.Posts,
+          as: 'posts',
+          include: [
+            {
+              model: DB.Comments,
+              as: 'comments',
+              include: [{ model: DB.Users, as: 'user' }], // comment.user
+            },
+            { model: DB.Users, as: 'author' }, // post.user
+          ],
+        },
       ],
     });
   },

@@ -5,7 +5,7 @@ async function syncDatabase() {
   try {
     await DB.sequelize.authenticate();
     logger.info('Database connected successfully!');
-    await DB.sequelize.sync({ alter: true }); // optional: use { force: true } for a full reset
+    await DB.sequelize.sync({ force: true }); // optional: use { force: true } for a full reset
     logger.info('Database synchronized successfully!');
     process.exit(0);
   } catch (error) {

@@ -6,6 +6,7 @@ import {
   updateUser,
   deleteUser,
   createUser,
+  getEventsByUserId,
 } from './user.service';
 
 export const getUserByIdController = async (
@@ -68,6 +69,22 @@ export const deleteUserController = async (
   try {
     const response = await deleteUser(req.params.userId);
     res.status(200).json({ message: 'User deleted', data: response });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getEventsByUserIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.params.id;
+    console.log('User ID:', userId);
+
+    const events = await getEventsByUserId(userId);
+    res.status(200).json({ message: 'Events fetched', data: events });
   } catch (error) {
     next(error);
   }
