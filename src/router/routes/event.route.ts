@@ -9,6 +9,8 @@ import {
   sendEventInvitationController,
   sendEventInvitationsController,
   getEventInvitationsController,
+  leaveEventController,
+  kickUserFromEventController,
 } from 'modules/event/event.controller';
 
 const eventRouter = express.Router();
@@ -18,7 +20,8 @@ eventRouter.get('/', getAllEventsController);
 eventRouter.post('/', createEventController);
 eventRouter.put('/:eventId', updateEventController);
 eventRouter.delete('/:eventId', deleteEventController);
-
+eventRouter.post('/:eventId/leave', leaveEventController);
+eventRouter.post('/:eventId/kick', kickUserFromEventController);
 // Event invitation routes
 eventRouter.get('/:eventId/invitations', getEventInvitationsController);
 eventRouter.post('/:eventId/invitations', sendEventInvitationController);

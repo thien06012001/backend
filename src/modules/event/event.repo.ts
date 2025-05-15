@@ -21,6 +21,16 @@ export const eventRepo = {
             { model: DB.Users, as: 'author' }, // post.user
           ],
         },
+        {
+          model: DB.Requests,
+          as: 'requests',
+          include: [{ model: DB.Users, as: 'user' }], // request.user
+        },
+        {
+          model: DB.Invitations,
+          as: 'invitations', // Add this alias in setupAssociations
+          include: [{ model: DB.Users, as: 'user' }], // get invited user info
+        },
       ],
     });
   },
@@ -31,7 +41,11 @@ export const eventRepo = {
       include: [
         { model: DB.Users, as: 'owner' },
         { model: DB.Users, as: 'participants' },
+        { model: DB.Requests, as: 'requests' },
       ],
+      where: {
+        is_public: true,
+      },
     });
   },
 
@@ -48,5 +62,26 @@ export const eventRepo = {
   delete: async (eventId: string): Promise<number> => {
     await DB.sequelize.sync();
     return await DB.Events.destroy({ where: { id: eventId } });
+  },
+
+  removeParticipant: async (
+    eventId: string,
+    userId: string,
+  ): Promise<number> => {
+    await DB.sequelize.sync();
+    return await DB.EventParticipants.destroy({
+      where: {
+        event_id: eventId,
+        user_id: userId,
+      },
+    });
+  },
+
+  addParticipant: async (eventId: string, userId: string) => {
+    await DB.sequelize.sync();
+    return await DB.EventParticipants.create({
+      event_id: eventId,
+      user_id: userId,
+    });
   },
 };

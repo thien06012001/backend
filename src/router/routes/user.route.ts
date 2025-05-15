@@ -7,6 +7,7 @@ import {
   updateUserController,
   deleteUserController,
   getEventsByUserIdController,
+  getJoinedEventsByUserIdController,
 } from 'modules/user/user.controller';
 
 const userRouter = express.Router();
@@ -16,6 +17,7 @@ userRouter.get('/', getAllUsersController);
 userRouter.post('/', createUserController);
 userRouter.put('/:id', updateUserController);
 userRouter.delete('/:id', deleteUserController);
-userRouter.get('/:id/events', getEventsByUserIdController); // Assuming this is to get events by user ID
+userRouter.get('/:id/events', getEventsByUserIdController);
+userRouter.get('/:id/joined-events', getJoinedEventsByUserIdController);
 
 export default userRouter;

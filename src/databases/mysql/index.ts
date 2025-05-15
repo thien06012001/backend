@@ -7,6 +7,7 @@ import invitationModel from './models/invitation.model';
 import postModel from './models/post.model';
 import commentModel from './models/comment.model';
 import notificationModel from './models/notification.model';
+import requestModel from './models/request.model';
 
 import {
   DB_DIALECT,
@@ -58,6 +59,7 @@ const InvitationModel = invitationModel(sequelize);
 const PostModel = postModel(sequelize);
 const CommentModel = commentModel(sequelize);
 const NotificationModel = notificationModel(sequelize);
+const RequestModel = requestModel(sequelize);
 
 setupAssociations({
   UserModel,
@@ -67,6 +69,7 @@ setupAssociations({
   PostModel,
   CommentModel,
   NotificationModel,
+  RequestModel,
 });
 
 export const DB = {
@@ -77,6 +80,7 @@ export const DB = {
   Posts: PostModel,
   Comments: CommentModel,
   Notifications: NotificationModel,
+  Requests: RequestModel,
   sequelize, // connection instance (RAW queries)
   Sequelize, // library
 };

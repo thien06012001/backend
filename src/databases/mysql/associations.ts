@@ -6,6 +6,7 @@ export const setupAssociations = (models: {
   PostModel: any;
   CommentModel: any;
   NotificationModel: any;
+  RequestModel: any;
 }) => {
   const {
     UserModel,
@@ -15,6 +16,7 @@ export const setupAssociations = (models: {
     PostModel,
     CommentModel,
     NotificationModel,
+    RequestModel,
   } = models;
 
   // User to Event (owner) relationship
@@ -43,21 +45,21 @@ export const setupAssociations = (models: {
     as: 'participants',
   });
 
-  // User to Event (invitations) relationship - through Invitation
-  UserModel.belongsToMany(EventModel, {
-    through: InvitationModel,
-    foreignKey: 'user_id',
-    otherKey: 'event_id',
-    as: 'invitedEvents',
-  });
+  // // User to Event (invitations) relationship - through Invitation
+  // UserModel.belongsToMany(EventModel, {
+  //   through: InvitationModel,
+  //   foreignKey: 'user_id',
+  //   otherKey: 'event_id',
+  //   as: 'invitedEvents',
+  // });
 
-  // Event to User (invitations) relationship - through Invitation
-  EventModel.belongsToMany(UserModel, {
-    through: InvitationModel,
-    foreignKey: 'event_id',
-    otherKey: 'user_id',
-    as: 'invitedUsers',
-  });
+  // // Event to User (invitations) relationship - through Invitation
+  // EventModel.belongsToMany(UserModel, {
+  //   through: InvitationModel,
+  //   foreignKey: 'event_id',
+  //   otherKey: 'user_id',
+  //   as: 'invitedUsers',
+  // });
 
   // Direct access to the invitation model (the join table)
   InvitationModel.belongsTo(UserModel, {
@@ -73,10 +75,12 @@ export const setupAssociations = (models: {
   // For easier access to invitations from user/event
   UserModel.hasMany(InvitationModel, {
     foreignKey: 'user_id',
+    as: 'invitations',
   });
 
   EventModel.hasMany(InvitationModel, {
     foreignKey: 'event_id',
+    as: 'invitations',
   });
 
   // Post relationships
@@ -131,5 +135,25 @@ export const setupAssociations = (models: {
   NotificationModel.belongsTo(UserModel, {
     foreignKey: 'user_id',
     as: 'user',
+  });
+
+  UserModel.hasMany(RequestModel, {
+    foreignKey: 'user_id',
+    as: 'requests',
+  });
+
+  RequestModel.belongsTo(UserModel, {
+    foreignKey: 'user_id',
+    as: 'user',
+  });
+
+  EventModel.hasMany(RequestModel, {
+    foreignKey: 'event_id',
+    as: 'requests',
+  });
+
+  RequestModel.belongsTo(EventModel, {
+    foreignKey: 'event_id',
+    as: 'event',
   });
 };

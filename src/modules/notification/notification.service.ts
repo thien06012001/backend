@@ -16,10 +16,11 @@ export const getNotificationById = async (notificationId: string) => {
 export const getNotificationsByUserId = async (userId: string) => {
   // Check if user exists
   const user = await userRepo.getById(userId);
+
   if (!user) {
     throw new CustomError('User not found', 404);
   }
-
+  await notificationRepo.markAllAsRead(userId);
   return await notificationRepo.getByUserId(userId);
 };
 

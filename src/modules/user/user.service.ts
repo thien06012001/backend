@@ -53,3 +53,13 @@ export const getEventsByUserId = async (userId: string) => {
 
   return events;
 };
+
+export const getJoinedEventsByUserId = async (userId: string) => {
+  const events = await repo.getJoinedEventsByUserId(userId);
+
+  if (!events) {
+    throw new CustomError('No joined events found for this user', 404);
+  }
+
+  return events;
+};

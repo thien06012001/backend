@@ -8,6 +8,8 @@ import {
   sendEventInvitation,
   sendEventInvitations,
   getEventInvitations,
+  leaveEvent,
+  kickUserFromEvent,
 } from './event.service';
 
 export const getEventByIdController = async (
@@ -85,8 +87,8 @@ export const sendEventInvitationController = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { userId } = req.body;
-    const response = await sendEventInvitation(req.params.eventId, userId);
+    const { email } = req.body;
+    const response = await sendEventInvitation(req.params.eventId, email);
     res.status(201).json({ message: 'Invitation sent', data: response });
   } catch (error) {
     next(error);
@@ -121,6 +123,34 @@ export const getEventInvitationsController = async (
     res
       .status(200)
       .json({ message: 'Event invitations fetched', data: response });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const leaveEventController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { userId } = req.body;
+    const response = await leaveEvent(req.params.eventId, userId);
+    res.status(200).json({ message: 'Left event', data: response });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const kickUserFromEventController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { userId } = req.body;
+    const response = await kickUserFromEvent(req.params.eventId, userId);
+    res.status(200).json({ message: 'User kicked from event', data: response });
   } catch (error) {
     next(error);
   }

@@ -1,6 +1,7 @@
 import { IBase } from './base.interface';
 import { User } from './user.interface';
 import { Invitation } from './invitation.interface';
+import { Request } from './request.interface';
 
 export interface IEventRequest {
   name: string;
@@ -19,4 +20,5 @@ export interface Event extends IBase, IEventRequest {
   participants?: User[]; // Users participating in this event
   invitedUsers?: User[]; // Users invited to this event
   invitations?: Invitation[]; // Direct access to invitations
+  requests?: Request[];
 }

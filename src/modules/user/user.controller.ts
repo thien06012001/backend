@@ -7,6 +7,7 @@ import {
   deleteUser,
   createUser,
   getEventsByUserId,
+  getJoinedEventsByUserId,
 } from './user.service';
 
 export const getUserByIdController = async (
@@ -81,10 +82,24 @@ export const getEventsByUserIdController = async (
 ) => {
   try {
     const userId = req.params.id;
-    console.log('User ID:', userId);
 
     const events = await getEventsByUserId(userId);
     res.status(200).json({ message: 'Events fetched', data: events });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getJoinedEventsByUserIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.params.id;
+
+    const events = await getJoinedEventsByUserId(userId);
+    res.status(200).json({ message: 'Joined events fetched', data: events });
   } catch (error) {
     next(error);
   }

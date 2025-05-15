@@ -42,4 +42,25 @@ export const repo = {
 
     return user;
   },
+  getJoinedEventsByUserId: async (userId: string): Promise<any> => {
+    await DB.sequelize.sync();
+
+    const user = await DB.Users.findOne({
+      where: { id: userId },
+      include: [
+        {
+          model: DB.Events,
+          as: 'participatingEvents',
+          include: [
+            {
+              model: DB.Users,
+              as: 'participants',
+            },
+          ],
+        },
+      ],
+    });
+
+    return user;
+  },
 };

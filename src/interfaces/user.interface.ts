@@ -1,6 +1,7 @@
 import { IBase } from './base.interface';
 import { Event } from './event.interface';
 import { Invitation } from './invitation.interface';
+import { Request } from './request.interface';
 
 export interface IUserRequest {
   email: string;
@@ -16,4 +17,5 @@ export interface User extends IBase, IUserRequest {
   invitedEvents?: Event[]; // Events this user is invited to
   invitations?: Invitation[]; // Direct access to invitations
   role?: string;
+  requests?: Request[];
 }

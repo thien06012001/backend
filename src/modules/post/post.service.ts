@@ -30,6 +30,7 @@ export const getAllPosts = async () => {
 export const createPost = async (post: IPostRequest) => {
   // Check if event exists
   const event = await eventRepo.getById(post.eventId);
+
   if (!event) {
     throw new CustomError('Event not found', 404);
   }
