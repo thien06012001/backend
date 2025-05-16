@@ -43,6 +43,8 @@ export const login = async (req: Partial<IUserRequest>) => {
     throw new CustomError('Invalid email or password', 401);
   }
 
+  console.log('User found:', user.password);
+
   return {
     id: user.id,
     email: user.email,

@@ -15,7 +15,7 @@ export class UserModel
   public phone: string | undefined;
   public created_at: string | undefined;
   public updated_at: string | undefined;
-  public role: string = 'user'; // Updated to match interface
+  public role!: string; // Updated to match interface
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }

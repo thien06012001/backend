@@ -8,6 +8,7 @@ import postRouter from './routes/post.route';
 import commentRouter from './routes/comment.route';
 import notificationRouter from './routes/notification.route';
 import requestRouter from './routes/request.route';
+import adminRouter from './routes/admin.route';
 
 const router = express.Router();
 
@@ -19,5 +20,6 @@ router.use('/posts', postRouter);
 router.use('/comments', commentRouter);
 router.use('/notifications', notificationRouter);
 router.use('/requests', requestRouter);
+router.use('/admin', adminRouter);
 
 export default router;

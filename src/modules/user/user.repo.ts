@@ -1,5 +1,5 @@
 import { DB } from 'databases/mysql';
-import { get } from 'http';
+
 import { IUserRequest, User } from 'interfaces/user.interface';
 
 export const repo = {
@@ -20,7 +20,7 @@ export const repo = {
 
   create: async (user: IUserRequest): Promise<User> => {
     await DB.sequelize.sync();
-    return await DB.Users.create({ ...user });
+    return await DB.Users.create({ ...user, role: 'user' });
   },
 
   update: async (userId: string, user: IUserRequest): Promise<[number]> => {

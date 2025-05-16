@@ -43,7 +43,7 @@ async function seedDatabase() {
       id: faker.string.uuid(),
       name: 'admin',
       email: 'bang2004@gmail.com',
-      role: 'user',
+      role: 'admin',
       phone: faker.phone.number(),
       password: await hash('bang2004', 12),
     };
