@@ -69,9 +69,34 @@ async function seedDatabase() {
     );
     await User.bulkCreate([...users, defaultUser]);
 
-    const createRandomEvent = (ownerId: string) => {
-      const start = faker.date.future();
-      const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+    const types: ('past' | 'current' | 'upcoming')[] = [
+      'past',
+      'current',
+      'upcoming',
+    ];
+
+    const createRandomEvent = (
+      ownerId: string,
+      type: 'past' | 'current' | 'upcoming',
+    ) => {
+      const now = new Date();
+      let start: Date;
+      let end: Date;
+
+      if (type === 'past') {
+        end = faker.date.between({
+          from: new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000),
+          to: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000),
+        });
+        start = new Date(end.getTime() - 2 * 60 * 60 * 1000);
+      } else if (type === 'current') {
+        start = new Date(now.getTime() - 1 * 60 * 60 * 1000);
+        end = new Date(now.getTime() + 1 * 60 * 60 * 1000);
+      } else {
+        start = faker.date.soon({ days: 14 });
+        end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+      }
+
       return {
         name: faker.lorem.words(3),
         start_time: start.toISOString(),
@@ -85,27 +110,25 @@ async function seedDatabase() {
         }),
         description: faker.lorem.paragraph(),
         image_url: faker.image.url(),
-        participantReminder: faker.number.int({
-          min: 2,
-          max: 4,
-        }),
-        invitationReminder: faker.number.int({
-          min: 2,
-          max: 4,
-        }),
+        participantReminder: faker.number.int({ min: 2, max: 4 }),
+        invitationReminder: faker.number.int({ min: 2, max: 4 }),
       };
     };
 
     const events = users.flatMap((user) => {
       const count = faker.number.int({ min: 2, max: 3 });
-      return Array.from({ length: count }).map(() =>
-        createRandomEvent(user.id),
-      );
+      return Array.from({ length: count }).map(() => {
+        const type = faker.helpers.arrayElement(types);
+        return createRandomEvent(user.id, type);
+      });
     });
 
     const defaultUserEvents = Array.from({
       length: faker.number.int({ min: 2, max: 3 }),
-    }).map(() => createRandomEvent(defaultUser.id));
+    }).map(() => {
+      const type = faker.helpers.arrayElement(types);
+      return createRandomEvent(defaultUser.id, type);
+    });
 
     await Event.bulkCreate([...events, ...defaultUserEvents]);
 

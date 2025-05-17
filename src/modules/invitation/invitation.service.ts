@@ -74,18 +74,14 @@ export const bulkCreateInvitations = async (
 export const acceptInvitation = async (invitationId: string) => {
   const invitation = await getInvitationById(invitationId);
 
-  if (invitation.status !== InvitationStatus.PENDING) {
-    throw new CustomError('Invitation has already been processed', 400);
-  }
-
-  const [updated] = await invitationRepo.updateStatus(
-    invitationId,
-    InvitationStatus.ACCEPTED,
+  await DB.Invitations.update(
+    {
+      status: InvitationStatus.ACCEPTED,
+    },
+    {
+      where: { id: invitationId },
+    },
   );
-
-  if (!updated) {
-    throw new CustomError('Failed to update invitation status', 500);
-  }
 
   // Add user to event participants
   await DB.EventParticipants.create({
@@ -97,20 +93,14 @@ export const acceptInvitation = async (invitationId: string) => {
 };
 
 export const rejectInvitation = async (invitationId: string) => {
-  const invitation = await getInvitationById(invitationId);
-
-  if (invitation.status !== InvitationStatus.PENDING) {
-    throw new CustomError('Invitation has already been processed', 400);
-  }
-
-  const [updated] = await invitationRepo.updateStatus(
-    invitationId,
-    InvitationStatus.REJECTED,
+  await DB.Invitations.update(
+    {
+      status: InvitationStatus.REJECTED,
+    },
+    {
+      where: { id: invitationId },
+    },
   );
-
-  if (!updated) {
-    throw new CustomError('Failed to update invitation status', 500);
-  }
 
   return await getInvitationById(invitationId);
 };
