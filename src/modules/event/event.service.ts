@@ -5,6 +5,9 @@ import { IEventRequest } from 'interfaces/event.interface';
 import { invitationRepo } from 'modules/invitation/invitation.repo';
 import { InvitationStatus } from 'interfaces/invitation.interface';
 import { repo } from 'modules/user/user.repo';
+import { DB } from 'databases/mysql';
+import { getSettings } from 'modules/setting/setting.service';
+import { Op } from 'sequelize';
 
 export const getEventById = async (eventId: string) => {
   const event = await eventRepo.getById(eventId);
@@ -21,6 +24,35 @@ export const getAllEvents = async () => {
 };
 
 export const createEvent = async (event: IEventRequest) => {
+  const userId = event.owner_id;
+
+  const currentEvents = await DB.Events.findAll({
+    where: {
+      owner_id: userId,
+      [Op.or]: [
+        { start_time: { [Op.gte]: new Date() } },
+        { end_time: { [Op.gte]: new Date() } },
+      ],
+    },
+  });
+
+  const settings = await getSettings();
+  const activeEvents = currentEvents.length;
+
+  if (activeEvents >= settings.maxActiveEvents) {
+    throw new CustomError(
+      `You can only create up to ${settings.maxActiveEvents} active events.`,
+      400,
+    );
+  }
+
+  if (event.capacity > settings.maxEventCapacity) {
+    throw new CustomError(
+      `Event capacity cannot exceed ${settings.maxEventCapacity}.`,
+      400,
+    );
+  }
+
   return await eventRepo.create(event);
 };
 
@@ -109,4 +141,46 @@ export const kickUserFromEvent = async (eventId: string, userId: string) => {
   }
 
   return { message: 'User kicked from the event successfully' };
+};
+
+export const getRequestsByEventId = async (eventId: string) => {
+  return await DB.Requests.findAll({
+    where: {
+      eventId,
+      status: 'PENDING',
+    },
+    include: [
+      {
+        model: DB.Users,
+        as: 'user',
+        attributes: ['id', 'name', 'email', 'phone'],
+      },
+    ],
+  });
+};
+
+export const getDiscussionsByEventId = async (eventId: string) => {
+  return await DB.Posts.findAll({
+    where: {
+      eventId,
+    },
+    include: [
+      {
+        model: DB.Comments,
+        as: 'comments',
+        include: [
+          {
+            model: DB.Users,
+            as: 'user',
+            attributes: ['id', 'name'],
+          },
+        ],
+      },
+      { model: DB.Users, as: 'author', attributes: ['id', 'name'] },
+    ],
+  });
+};
+
+export const getInvitationsByEventId = async (eventId: string) => {
+  return await invitationRepo.getByEventId(eventId);
 };

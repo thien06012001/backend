@@ -9,6 +9,7 @@ import commentRouter from './routes/comment.route';
 import notificationRouter from './routes/notification.route';
 import requestRouter from './routes/request.route';
 import adminRouter from './routes/admin.route';
+import settingRouter from './routes/setting.route';
 
 const router = express.Router();
 
@@ -21,5 +22,6 @@ router.use('/comments', commentRouter);
 router.use('/notifications', notificationRouter);
 router.use('/requests', requestRouter);
 router.use('/admin', adminRouter);
+router.use('/settings', settingRouter);
 
 export default router;

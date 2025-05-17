@@ -21,7 +21,8 @@ export const invitationRepo = {
     await DB.sequelize.sync();
     return await DB.Invitations.findAll({
       where: { event_id: eventId },
-      include: [{ model: DB.Users, as: 'user' }],
+      attributes: ['id', 'status', 'created_at'],
+      include: [{ model: DB.Users, as: 'user', attributes: ['id', 'email'] }],
     });
   },
 

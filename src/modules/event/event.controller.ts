@@ -10,6 +10,9 @@ import {
   getEventInvitations,
   leaveEvent,
   kickUserFromEvent,
+  getRequestsByEventId,
+  getDiscussionsByEventId,
+  getInvitationsByEventId,
 } from './event.service';
 
 export const getEventByIdController = async (
@@ -151,6 +154,48 @@ export const kickUserFromEventController = async (
     const { userId } = req.body;
     const response = await kickUserFromEvent(req.params.eventId, userId);
     res.status(200).json({ message: 'User kicked from event', data: response });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getRequestsByEventIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { eventId } = req.params;
+    const response = await getRequestsByEventId(eventId);
+    res.status(200).json({ message: 'Requests fetched', data: response });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getDiscussionsByEventIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { eventId } = req.params;
+    const response = await getDiscussionsByEventId(eventId);
+    res.status(200).json({ message: 'Discussions fetched', data: response });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getInvitationsByEventIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { eventId } = req.params;
+    const response = await getInvitationsByEventId(eventId);
+    res.status(200).json({ message: 'Invitations fetched', data: response });
   } catch (error) {
     next(error);
   }

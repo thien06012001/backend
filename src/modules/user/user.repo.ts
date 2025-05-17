@@ -37,7 +37,13 @@ export const repo = {
 
     const user = await DB.Users.findOne({
       where: { id: userId },
-      include: [{ model: DB.Events, as: 'ownedEvents' }],
+      include: [
+        {
+          model: DB.Events,
+          as: 'ownedEvents',
+          attributes: ['id', 'name', 'start_time'],
+        },
+      ],
     });
 
     return user;
@@ -55,8 +61,10 @@ export const repo = {
             {
               model: DB.Users,
               as: 'participants',
+              attributes: ['id'],
             },
           ],
+          attributes: ['id', 'name', 'capacity', 'is_public', 'start_time'],
         },
       ],
     });

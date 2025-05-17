@@ -7,29 +7,10 @@ export const eventRepo = {
     return await DB.Events.findOne({
       where: { id: eventId },
       include: [
-        { model: DB.Users, as: 'owner' },
-        { model: DB.Users, as: 'participants' },
         {
-          model: DB.Posts,
-          as: 'posts',
-          include: [
-            {
-              model: DB.Comments,
-              as: 'comments',
-              include: [{ model: DB.Users, as: 'user' }], // comment.user
-            },
-            { model: DB.Users, as: 'author' }, // post.user
-          ],
-        },
-        {
-          model: DB.Requests,
-          as: 'requests',
-          include: [{ model: DB.Users, as: 'user' }], // request.user
-        },
-        {
-          model: DB.Invitations,
-          as: 'invitations', // Add this alias in setupAssociations
-          include: [{ model: DB.Users, as: 'user' }], // get invited user info
+          model: DB.Users,
+          as: 'participants',
+          attributes: ['id', 'email', 'name', 'phone'],
         },
       ],
     });
@@ -37,15 +18,25 @@ export const eventRepo = {
 
   getAll: async (): Promise<Event[]> => {
     await DB.sequelize.sync();
+
     return await DB.Events.findAll({
       include: [
-        { model: DB.Users, as: 'owner' },
-        { model: DB.Users, as: 'participants' },
-        { model: DB.Requests, as: 'requests' },
+        { model: DB.Users, as: 'owner', attributes: ['id', 'email'] },
+        {
+          model: DB.Users,
+          as: 'participants',
+          attributes: ['id'],
+        },
+        {
+          model: DB.Requests,
+          as: 'requests',
+          attributes: ['id', 'user_id', 'event_id', 'status'],
+        },
       ],
       where: {
         is_public: true,
       },
+      attributes: ['id', 'name', 'start_time', 'end_time', 'location'],
     });
   },
 

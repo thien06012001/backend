@@ -6,6 +6,19 @@ import { CustomError } from 'utils/error.custom';
 
 import { hash, compare } from 'bcrypt';
 
+const secretKey = `${process.env.SECRET_KEY}`;
+
+export const encrypt = (text: string): string => {
+  let result = '';
+  for (let i = 0; i < text.length; i++) {
+    const t = text.charCodeAt(i);
+    const k = secretKey.charCodeAt(i % secretKey.length);
+    result += String.fromCharCode(t ^ k); // XOR logic
+  }
+  return Buffer.from(result).toString('base64');
+};
+
+
 export const register = async (req: IUserRequest) => {
   const { email, name, password, phone } = req;
 
@@ -43,11 +56,15 @@ export const login = async (req: Partial<IUserRequest>) => {
     throw new CustomError('Invalid email or password', 401);
   }
 
-  console.log('User found:', user.password);
-
-  return {
+  const sessionPayload = JSON.stringify({
     id: user.id,
     email: user.email,
     role: user.role,
+  });
+
+  const token = encrypt(sessionPayload);
+
+  return {
+    token,
   };
 };

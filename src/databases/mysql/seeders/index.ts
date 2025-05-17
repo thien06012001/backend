@@ -1,5 +1,4 @@
 import logger from 'utils/logger';
-
 import { DB } from '..';
 
 import initUserModel from '../models/user.model';
@@ -10,6 +9,7 @@ import initCommentModel from '../models/comment.model';
 import initRequestModel from '../models/request.model';
 import initInvitationModel from '../models/invitation.model';
 import initNotificationModel from '../models/notification.model';
+import initConfigurationModel from '../models/configuration.model';
 
 import { hash } from 'bcrypt';
 import { faker } from '@faker-js/faker';
@@ -27,8 +27,8 @@ async function seedDatabase() {
     const Request = initRequestModel(DB.sequelize);
     const Invitation = initInvitationModel(DB.sequelize);
     const Notification = initNotificationModel(DB.sequelize);
+    const Configuration = initConfigurationModel(DB.sequelize);
 
-    // Clear tables in correct order to avoid FK constraint errors
     await EventParticipant.destroy({ where: {} });
     await Invitation.destroy({ where: {} });
     await Request.destroy({ where: {} });
@@ -37,8 +37,15 @@ async function seedDatabase() {
     await Notification.destroy({ where: {} });
     await Event.destroy({ where: {} });
     await User.destroy({ where: {} });
+    await Configuration.destroy({ where: {} });
 
-    // Create default admin user
+    const defaultConfig = {
+      maxActiveEvents: 5,
+      maxEventCapacity: 50,
+      id: faker.string.uuid(),
+    };
+    await Configuration.create(defaultConfig);
+
     const defaultUser = {
       id: faker.string.uuid(),
       name: 'admin',
@@ -48,7 +55,6 @@ async function seedDatabase() {
       password: await hash('bang2004', 12),
     };
 
-    // Create 10 primary users
     const users = await Promise.all(
       Array.from({ length: 10 }).map(async (_, i) => ({
         id: faker.string.uuid(),
@@ -59,14 +65,11 @@ async function seedDatabase() {
         phone: faker.phone.number(),
       })),
     );
-
     await User.bulkCreate([...users, defaultUser]);
 
-    // Create 2–3 events per user
     const createRandomEvent = (ownerId: string) => {
       const start = faker.date.future();
       const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
-
       return {
         name: faker.lorem.words(3),
         start_time: start.toISOString(),
@@ -74,15 +77,18 @@ async function seedDatabase() {
         owner_id: ownerId,
         is_public: faker.datatype.boolean(),
         location: faker.location.city(),
-        capacity: faker.number.int({ min: 10, max: 100 }),
+        capacity: faker.number.int({
+          min: 10,
+          max: defaultConfig.maxEventCapacity,
+        }),
         description: faker.lorem.paragraph(),
         image_url: faker.image.url(),
       };
     };
 
     const events = users.flatMap((user) => {
-      const eventCount = faker.number.int({ min: 2, max: 3 });
-      return Array.from({ length: eventCount }).map(() =>
+      const count = faker.number.int({ min: 2, max: 3 });
+      return Array.from({ length: count }).map(() =>
         createRandomEvent(user.id),
       );
     });
@@ -93,7 +99,6 @@ async function seedDatabase() {
 
     await Event.bulkCreate([...events, ...defaultUserEvents]);
 
-    // Create 100 users who will join events
     const joiningUsers = await Promise.all(
       Array.from({ length: 100 }).map(async (_, i) => ({
         id: faker.string.uuid(),
@@ -104,13 +109,11 @@ async function seedDatabase() {
         phone: faker.phone.number(),
       })),
     );
-
     await User.bulkCreate(joiningUsers);
 
     const allEvents = await Event.findAll();
     const allUser = await User.findAll();
 
-    // Track participants
     const seen = new Set<string>();
     const participants = [];
 
@@ -136,7 +139,6 @@ async function seedDatabase() {
 
     await EventParticipant.bulkCreate(participants);
 
-    // Build participant map
     const participantMap: Record<string, string[]> = {};
     for (const event of allEvents) {
       participantMap[event.id] = participants
@@ -144,7 +146,6 @@ async function seedDatabase() {
         .map((p) => p.user_id);
     }
 
-    // Create posts
     const posts = allEvents.flatMap((event) => {
       const userIds = participantMap[event.id] || [];
       return Array.from({ length: faker.number.int({ min: 2, max: 4 }) }).map(
@@ -184,28 +185,24 @@ async function seedDatabase() {
 
     await Comment.bulkCreate(comments);
 
-    // Requests: each user requests 4 public events not already joined
+    // ✅ Ensure each public event has at least 4 join requests
     const requests = [];
-    for (const user of allUser) {
-      const joinedEventIds = new Set(
+
+    for (const event of allEvents.filter((e) => e.is_public)) {
+      const alreadyJoined = new Set(
         participants
-          .filter((p) => p.user_id === user.id)
-          .map((p) => p.event_id),
+          .filter((p) => p.event_id === event.id)
+          .map((p) => p.user_id),
+      );
+      const eligibleUsers = allUser.filter(
+        (u) => u.id !== event.owner_id && !alreadyJoined.has(u.id),
+      );
+      const selected = faker.helpers.arrayElements(
+        eligibleUsers,
+        Math.min(4, eligibleUsers.length),
       );
 
-      const requestableEvents = allEvents.filter(
-        (event) =>
-          event.is_public &&
-          event.owner_id !== user.id &&
-          !joinedEventIds.has(event.id),
-      );
-
-      const requested = faker.helpers.arrayElements(
-        requestableEvents,
-        Math.min(4, requestableEvents.length),
-      );
-
-      for (const event of requested) {
+      for (const user of selected) {
         requests.push({
           status: 'pending',
           eventId: event.id,
@@ -218,51 +215,42 @@ async function seedDatabase() {
 
     await Request.bulkCreate(requests);
 
+    // ✅ Ensure each user gets at least 2 invitations to private events
     const invitations = [];
 
-    for (const event of allEvents) {
-      const invitedUserIds = new Set<string>();
-      const joinedUserIds = new Set(
+    for (const user of allUser) {
+      const joined = new Set(
         participants
-          .filter((p) => p.event_id === event.id)
-          .map((p) => p.user_id),
+          .filter((p) => p.user_id === user.id)
+          .map((p) => p.event_id),
       );
-
-      const candidates = allUser.filter(
-        (u) =>
-          u.id !== event.owner_id &&
-          !joinedUserIds.has(u.id) &&
-          !invitedUserIds.has(u.id),
+      const privateEvents = allEvents.filter(
+        (e) => !e.is_public && e.owner_id !== user.id && !joined.has(e.id),
       );
-
       const selected = faker.helpers.arrayElements(
-        candidates,
-        Math.min(10, candidates.length),
+        privateEvents,
+        Math.min(2, privateEvents.length),
       );
 
-      for (const user of selected) {
-        const key = `${event.id}-${user.id}`;
-        if (!invitedUserIds.has(user.id)) {
-          invitedUserIds.add(user.id);
-          invitations.push({
-            id: faker.string.uuid(),
-            event_id: event.id,
-            user_id: user.id,
-            status: InvitationStatus.PENDING,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          });
-        }
+      for (const event of selected) {
+        invitations.push({
+          id: faker.string.uuid(),
+          event_id: event.id,
+          user_id: user.id,
+          status: InvitationStatus.PENDING,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
       }
     }
 
     await Invitation.bulkCreate(invitations);
 
+    // Notifications
     const notifications = [];
 
-    // 1. Notifications for requests made to default user's events
     const defaultUserEventIds = allEvents
-      .filter((event) => event.owner_id === defaultUser.id)
+      .filter((e) => e.owner_id === defaultUser.id)
       .map((e) => e.id);
 
     const requestsToDefaultUserEvents = requests.filter((r) =>
@@ -282,7 +270,6 @@ async function seedDatabase() {
       });
     }
 
-    // 2. Notifications for approved requests (default user joined public events)
     const approvedEventIds = participants
       .filter((p) => p.user_id === defaultUser.id)
       .map((p) => p.event_id);
@@ -300,7 +287,6 @@ async function seedDatabase() {
       });
     }
 
-    // 3. Notifications for rejected requests (default user requests not in participants)
     const requestedEventIds = requests
       .filter((r) => r.userId === defaultUser.id)
       .map((r) => r.eventId);
@@ -332,6 +318,7 @@ async function seedDatabase() {
     logger.info(`Created ${posts.length} posts.`);
     logger.info(`Inserted ${comments.length} comments.`);
     logger.info(`Created ${requests.length} requests.`);
+    logger.info(`Created ${invitations.length} invitations.`);
     logger.info('Database seeding completed successfully.');
 
     process.exit(0);

@@ -21,6 +21,7 @@ import {
 import logger from 'utils/logger';
 
 import { setupAssociations } from './associations';
+import configurationModel from './models/configuration.model';
 
 const sequelize = new Sequelize.Sequelize(
   DB_NAME as string,
@@ -60,6 +61,7 @@ const PostModel = postModel(sequelize);
 const CommentModel = commentModel(sequelize);
 const NotificationModel = notificationModel(sequelize);
 const RequestModel = requestModel(sequelize);
+const ConfigurationModel = configurationModel(sequelize);
 
 setupAssociations({
   UserModel,
@@ -81,6 +83,7 @@ export const DB = {
   Comments: CommentModel,
   Notifications: NotificationModel,
   Requests: RequestModel,
+  Configurations: ConfigurationModel,
   sequelize, // connection instance (RAW queries)
   Sequelize, // library
 };
