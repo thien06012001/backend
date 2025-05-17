@@ -20,6 +20,8 @@ export class EventModel
   public description!: string;
   public image_url!: string;
   public is_public!: boolean; // Default value
+  public participantReminder!: number;
+  public invitationReminder!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -68,6 +70,16 @@ export default function (sequelize: Sequelize): typeof EventModel {
       image_url: {
         allowNull: true,
         type: DataTypes.STRING,
+      },
+      participantReminder: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
+        defaultValue: 2,
+      },
+      invitationReminder: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
+        defaultValue: 2,
       },
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,

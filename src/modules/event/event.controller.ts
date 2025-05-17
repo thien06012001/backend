@@ -13,6 +13,8 @@ import {
   getRequestsByEventId,
   getDiscussionsByEventId,
   getInvitationsByEventId,
+  updateEventReminders,
+  pingEventReminder,
 } from './event.service';
 
 export const getEventByIdController = async (
@@ -196,6 +198,58 @@ export const getInvitationsByEventIdController = async (
     const { eventId } = req.params;
     const response = await getInvitationsByEventId(eventId);
     res.status(200).json({ message: 'Invitations fetched', data: response });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateEventReminderController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { eventId } = req.params;
+    const { participantReminder, invitationReminder } = req.body;
+
+    // Validate the input
+    if (
+      typeof participantReminder !== 'number' ||
+      typeof invitationReminder !== 'number'
+    ) {
+      res.status(400).json({
+        message: 'Invalid input',
+        data: null,
+      });
+    }
+
+    // Update the event reminder
+    const response = await updateEventReminders(
+      eventId,
+      participantReminder,
+      invitationReminder,
+    );
+
+    res.status(200).json({
+      message: 'Event reminder updated successfully',
+      data: response,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const pingEventReminderController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    await pingEventReminder();
+
+    res.status(200).json({
+      message: 'Event reminder pinged successfully',
+    });
   } catch (error) {
     next(error);
   }

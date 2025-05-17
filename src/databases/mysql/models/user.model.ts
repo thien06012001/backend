@@ -28,7 +28,6 @@ export default function (sequelize: Sequelize): typeof UserModel {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
       },
-
       email: {
         allowNull: false,
         type: DataTypes.STRING,

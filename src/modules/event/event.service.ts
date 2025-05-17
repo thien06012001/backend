@@ -7,7 +7,11 @@ import { InvitationStatus } from 'interfaces/invitation.interface';
 import { repo } from 'modules/user/user.repo';
 import { DB } from 'databases/mysql';
 import { getSettings } from 'modules/setting/setting.service';
-import { Op } from 'sequelize';
+import { Op, where } from 'sequelize';
+import { EventModel } from 'databases/mysql/models/event.model';
+import { EventParticipantModel } from 'databases/mysql/models/eventParticipant.model';
+import { InvitationModel } from 'databases/mysql/models/invitation.model';
+import { NotificationModel } from 'databases/mysql/models/notification.model';
 
 export const getEventById = async (eventId: string) => {
   const event = await eventRepo.getById(eventId);
@@ -183,4 +187,93 @@ export const getDiscussionsByEventId = async (eventId: string) => {
 
 export const getInvitationsByEventId = async (eventId: string) => {
   return await invitationRepo.getByEventId(eventId);
+};
+
+export const updateEventReminders = async (
+  eventId: string,
+  participantReminder: number,
+  invitationReminder: number,
+) => {
+  const event = await eventRepo.getById(eventId);
+
+  if (!event) {
+    throw new CustomError('Event not found', 404);
+  }
+
+  await DB.Events.update(
+    {
+      invitationReminder,
+      participantReminder,
+    },
+    {
+      where: { id: eventId },
+    },
+  );
+
+  return event;
+};
+
+const calculateDaysUntil = (from: Date, to: Date) => {
+  const start = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+  const end = new Date(to.getFullYear(), to.getMonth(), to.getDate());
+
+  const msPerDay = 1000 * 60 * 60 * 24;
+  return Math.floor((end.getTime() - start.getTime()) / msPerDay);
+};
+
+export const pingEventReminder = async () => {
+  const today = new Date();
+
+  // Fetch all upcoming events
+  const events = await EventModel.findAll({
+    where: {
+      start_time: {
+        [Op.gt]: today,
+      },
+    },
+  });
+
+  for (const event of events) {
+    const daysUntilEvent = calculateDaysUntil(
+      new Date(event.start_time),
+      today,
+    );
+
+    // 1. Participant reminders
+    if (daysUntilEvent === event.participantReminder) {
+      const participants = await EventParticipantModel.findAll({
+        where: {
+          event_id: event.id,
+        },
+      });
+
+      for (const participant of participants) {
+        await NotificationModel.create({
+          userId: participant.user_id,
+          title: 'Event Reminder',
+          description: `The event "${event.name}" is happening in ${event.participantReminder} day(s).`,
+          isRead: false,
+        });
+      }
+    }
+
+    // 2. Invitation reminders
+    if (daysUntilEvent === event.invitationReminder) {
+      const invitations = await InvitationModel.findAll({
+        where: {
+          event_id: event.id,
+          status: 'pending',
+        },
+      });
+
+      for (const invitation of invitations) {
+        await NotificationModel.create({
+          userId: invitation.user_id,
+          title: 'Pending Invitation Reminder',
+          description: `You have not responded to the invitation for "${event.name}", which starts in ${event.invitationReminder} day(s).`,
+          isRead: false,
+        });
+      }
+    }
+  }
 };

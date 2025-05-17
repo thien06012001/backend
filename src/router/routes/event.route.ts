@@ -14,6 +14,7 @@ import {
   getRequestsByEventIdController,
   getDiscussionsByEventIdController,
   getInvitationsByEventIdController,
+  updateEventReminderController,
 } from 'modules/event/event.controller';
 
 const eventRouter = express.Router();
@@ -25,6 +26,8 @@ eventRouter.put('/:eventId', updateEventController);
 eventRouter.delete('/:eventId', deleteEventController);
 eventRouter.post('/:eventId/leave', leaveEventController);
 eventRouter.post('/:eventId/kick', kickUserFromEventController);
+eventRouter.put('/:eventId/reminder', updateEventReminderController);
+
 // Event invitation routes
 eventRouter.get('/:eventId/invitations', getEventInvitationsController);
 eventRouter.post('/:eventId/invitations', sendEventInvitationController);

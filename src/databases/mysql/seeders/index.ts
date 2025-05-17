@@ -43,6 +43,8 @@ async function seedDatabase() {
       maxActiveEvents: 5,
       maxEventCapacity: 50,
       id: faker.string.uuid(),
+      defaultParticipantReminder: 2,
+      defaultInvitationReminder: 2,
     };
     await Configuration.create(defaultConfig);
 
@@ -83,6 +85,14 @@ async function seedDatabase() {
         }),
         description: faker.lorem.paragraph(),
         image_url: faker.image.url(),
+        participantReminder: faker.number.int({
+          min: 2,
+          max: 4,
+        }),
+        invitationReminder: faker.number.int({
+          min: 2,
+          max: 4,
+        }),
       };
     };
 

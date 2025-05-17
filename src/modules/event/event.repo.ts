@@ -42,7 +42,11 @@ export const eventRepo = {
 
   create: async (event: IEventRequest): Promise<Event> => {
     await DB.sequelize.sync();
-    return await DB.Events.create(event);
+    return await DB.Events.create({
+      ...event,
+      participantReminder: 2,
+      invitationReminder: 2,
+    });
   },
 
   update: async (eventId: string, event: IEventRequest): Promise<[number]> => {

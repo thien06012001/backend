@@ -21,4 +21,6 @@ export interface Event extends IBase, IEventRequest {
   invitedUsers?: User[]; // Users invited to this event
   invitations?: Invitation[]; // Direct access to invitations
   requests?: Request[];
+  participantReminder?: number;
+  invitationReminder: number;
 }

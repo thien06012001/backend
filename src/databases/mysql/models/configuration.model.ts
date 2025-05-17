@@ -12,6 +12,8 @@ export class ConfigurationModel
 {
   public maxActiveEvents!: number;
   public maxEventCapacity!: number;
+  public defaultParticipantReminder!: number;
+  public defaultInvitationReminder!: number;
   public id!: string;
 }
 
@@ -32,6 +34,16 @@ export default function (sequelize: Sequelize): typeof ConfigurationModel {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'max_event_capacity',
+      },
+      defaultParticipantReminder: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+        field: 'default_participant_reminder',
+      },
+      defaultInvitationReminder: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+        field: 'default_invitation_reminder',
       },
     },
     {
