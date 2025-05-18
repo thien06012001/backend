@@ -51,10 +51,10 @@ async function seedDatabase() {
     const defaultUser = {
       id: faker.string.uuid(),
       name: 'admin',
-      email: 'bang2004@gmail.com',
+      email: 'admin@admin.com',
       role: 'admin',
       phone: faker.phone.number(),
-      password: await hash('bang2004', 12),
+      password: await hash('admin', 12),
     };
 
     const users = await Promise.all(
