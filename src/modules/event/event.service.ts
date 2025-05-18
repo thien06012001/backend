@@ -30,6 +30,22 @@ export const getAllEvents = async () => {
 export const createEvent = async (event: IEventRequest) => {
   const userId = event.owner_id;
 
+  const startTime = new Date(event.start_time);
+  const endTime = new Date(event.end_time);
+  const now = new Date();
+
+  if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
+    throw new CustomError('Invalid start or end time format.', 400);
+  }
+
+  if (startTime <= now) {
+    throw new CustomError('Start time must be in the future.', 400);
+  }
+
+  if (endTime <= startTime) {
+    throw new CustomError('End time must be after start time.', 400);
+  }
+
   const currentEvents = await DB.Events.findAll({
     where: {
       owner_id: userId,
