@@ -67,6 +67,24 @@ export const updateEvent = async (eventId: string, event: IEventRequest) => {
     throw new CustomError('Event not found', 404);
   }
 
+  // Fetch all participants of the event
+  const participants = await EventParticipantModel.findAll({
+    where: { event_id: eventId },
+  });
+
+  const notifications = participants.map((participant) => ({
+    userId: participant.user_id,
+    eventId,
+    title: 'Event Updated',
+    description: `The event "${event.name}" has been updated.`,
+    isRead: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  }));
+
+  // Create notifications in bulk
+  await NotificationModel.bulkCreate(notifications);
+
   return event;
 };
 

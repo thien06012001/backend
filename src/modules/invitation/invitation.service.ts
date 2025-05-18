@@ -7,6 +7,7 @@ import {
 import { eventRepo } from 'modules/event/event.repo';
 import { repo as userRepo } from 'modules/user/user.repo';
 import { DB } from 'databases/mysql';
+import { NotificationModel } from 'databases/mysql/models/notification.model';
 
 export const getInvitationById = async (invitationId: string) => {
   const invitation = await invitationRepo.getById(invitationId);
@@ -56,7 +57,20 @@ export const createInvitation = async (invitation: IInvitationRequest) => {
     invitation.status = InvitationStatus.PENDING;
   }
 
-  return await invitationRepo.create(invitation);
+  const created = await invitationRepo.create(invitation);
+
+  // Create a notification for the invited user
+  await NotificationModel.create({
+    userId: invitation.user_id,
+    eventId: invitation.event_id,
+    title: 'New Invitation',
+    description: `You have been invited to join the event "${event.name}".`,
+    isRead: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  });
+
+  return created;
 };
 
 export const bulkCreateInvitations = async (
