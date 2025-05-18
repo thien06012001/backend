@@ -50,11 +50,11 @@ async function seedDatabase() {
 
     const defaultUser = {
       id: faker.string.uuid(),
-      name: 'admin',
-      email: 'admin@admin.com',
-      role: 'admin',
+      name: 'default',
+      email: 'default@default.com',
+      role: 'user',
+      password: await hash('default', 12),
       phone: faker.phone.number(),
-      password: await hash('admin', 12),
     };
 
     const users = await Promise.all(
@@ -345,6 +345,16 @@ async function seedDatabase() {
     }
 
     await Notification.bulkCreate(notifications);
+
+    const adminUser = {
+      id: faker.string.uuid(),
+      name: 'admin',
+      email: 'admin@admin.com',
+      role: 'admin',
+      phone: faker.phone.number(),
+      password: await hash('admin', 12),
+    };
+    await User.create(adminUser);
 
     logger.info(
       `Seeded ${users.length + 1} primary users and ${joiningUsers.length} joiners.`,
