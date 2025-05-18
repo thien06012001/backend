@@ -11,6 +11,7 @@ export const eventRepo = {
           model: DB.Users,
           as: 'participants',
           attributes: ['id', 'email', 'name', 'phone'],
+          required: false,
         },
       ],
     });
@@ -26,11 +27,13 @@ export const eventRepo = {
           model: DB.Users,
           as: 'participants',
           attributes: ['id'],
+          required: false,
         },
         {
           model: DB.Requests,
           as: 'requests',
           attributes: ['id', 'user_id', 'event_id', 'status'],
+          required: false,
         },
       ],
       where: {
