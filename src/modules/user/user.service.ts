@@ -1,6 +1,7 @@
 import { CustomError } from 'utils/error.custom';
 import { repo } from './user.repo';
 import { IUserRequest } from 'interfaces/user.interface';
+import { hash } from 'bcrypt';
 
 export const getUserById = async (userId: string) => {
   const user = await repo.getById(userId);
@@ -21,13 +22,21 @@ export const createUser = async (user: IUserRequest) => {
 };
 
 export const updateUser = async (userId: string, user: IUserRequest) => {
-  const [updated] = await repo.update(userId, user);
+  const { password, ...rest } = user;
+
+  const updatedData: IUserRequest = { ...rest, password };
+
+  if (password) {
+    updatedData.password = await hash(password, 12);
+  }
+
+  const [updated] = await repo.update(userId, updatedData);
 
   if (!updated) {
     throw new CustomError('User not found', 404);
   }
 
-  return user;
+  return updatedData;
 };
 
 export const deleteUser = async (userId: string) => {

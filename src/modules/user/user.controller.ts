@@ -16,7 +16,7 @@ export const getUserByIdController = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const response = await getUserById(req.params.userId);
+    const response = await getUserById(req.params.id);
     res.status(200).json({ message: 'User data fetched', data: response });
   } catch (error) {
     next(error);
@@ -55,7 +55,7 @@ export const updateUserController = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const response = await updateUser(req.params.userId, req.body);
+    const response = await updateUser(req.params.id, req.body);
     res.status(200).json({ message: 'User updated', data: response });
   } catch (error) {
     next(error);
