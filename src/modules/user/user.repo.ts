@@ -49,7 +49,7 @@ export const repo = {
         {
           model: DB.Events,
           as: 'ownedEvents',
-          attributes: ['id', 'name', 'start_time'],
+          attributes: ['id', 'name', 'start_time', 'is_public'],
         },
       ],
     });
