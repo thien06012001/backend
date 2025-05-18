@@ -13,6 +13,10 @@ export const eventRepo = {
           attributes: ['id', 'email', 'name', 'phone'],
           required: false,
         },
+        {
+          model: DB.Requests,
+          as: 'requests',
+        },
       ],
     });
   },
