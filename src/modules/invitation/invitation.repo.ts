@@ -23,6 +23,7 @@ export const invitationRepo = {
       where: { event_id: eventId },
       attributes: ['id', 'status', 'created_at'],
       include: [{ model: DB.Users, as: 'user', attributes: ['id', 'email'] }],
+      order: [['created_at', 'DESC']],
     });
   },
 
