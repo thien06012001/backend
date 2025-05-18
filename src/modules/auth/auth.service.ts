@@ -18,7 +18,6 @@ export const encrypt = (text: string): string => {
   return Buffer.from(result).toString('base64');
 };
 
-
 export const register = async (req: IUserRequest) => {
   const { email, name, password, phone } = req;
 

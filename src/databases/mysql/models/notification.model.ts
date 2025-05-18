@@ -14,6 +14,7 @@ export class NotificationModel
   public isRead!: boolean;
   public created_at: string | undefined;
   public updated_at: string | undefined;
+  public eventId!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -48,6 +49,11 @@ export default function (sequelize: Sequelize): typeof NotificationModel {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
         field: 'is_read',
+      },
+      eventId: {
+        allowNull: false,
+        type: DataTypes.UUID,
+        field: 'event_id',
       },
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,

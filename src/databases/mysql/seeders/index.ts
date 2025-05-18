@@ -300,6 +300,7 @@ async function seedDatabase() {
         isRead: false,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        eventId: event!.id,
       });
     }
 
@@ -317,6 +318,7 @@ async function seedDatabase() {
         isRead: false,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        eventId: event!.id,
       });
     }
 
@@ -338,6 +340,7 @@ async function seedDatabase() {
         isRead: false,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        eventId: event!.id,
       });
     }
 

@@ -6,6 +6,7 @@ export interface INotificationRequest {
   title: string;
   description: string;
   isRead?: boolean;
+  eventId: string;
 }
 
 export interface Notification extends IBase, INotificationRequest {

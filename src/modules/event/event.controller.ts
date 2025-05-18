@@ -246,7 +246,6 @@ export const pingEventReminderController = async (
 ): Promise<void> => {
   try {
     await pingEventReminder();
-
     res.status(200).json({
       message: 'Event reminder pinged successfully',
     });

@@ -99,6 +99,7 @@ export const sendEventInvitation = async (eventId: string, email: string) => {
     userId: user.id,
     title: `You have been invited to event ${event.name}`,
     isRead: false,
+    eventId: event.id,
   });
 
   // Create invitation
@@ -224,7 +225,6 @@ const calculateDaysUntil = (from: Date, to: Date) => {
 export const pingEventReminder = async () => {
   const today = new Date();
 
-  // Fetch all upcoming events
   const events = await EventModel.findAll({
     where: {
       start_time: {
@@ -233,47 +233,61 @@ export const pingEventReminder = async () => {
     },
   });
 
-  for (const event of events) {
-    const daysUntilEvent = calculateDaysUntil(
-      new Date(event.start_time),
-      today,
-    );
+  await Promise.all(
+    events.map(async (event) => {
+      const daysUntilEvent = calculateDaysUntil(
+        new Date(event.start_time),
+        today,
+      );
 
-    // 1. Participant reminders
-    if (daysUntilEvent === event.participantReminder) {
-      const participants = await EventParticipantModel.findAll({
-        where: {
-          event_id: event.id,
-        },
-      });
+      const notifications: any[] = [];
 
-      for (const participant of participants) {
-        await NotificationModel.create({
-          userId: participant.user_id,
-          title: 'Event Reminder',
-          description: `The event "${event.name}" is happening in ${event.participantReminder} day(s).`,
-          isRead: false,
+      // 1. Participant reminders
+      if (daysUntilEvent === event.participantReminder) {
+        const participants = await EventParticipantModel.findAll({
+          where: {
+            event_id: event.id,
+          },
         });
+
+        for (const participant of participants) {
+          notifications.push({
+            userId: participant.user_id,
+            title: 'Event Reminder',
+            description: `The event "${event.name}" is happening in ${event.participantReminder} day(s).`,
+            isRead: false,
+            eventId: event.id,
+            created_at: new Date(),
+            updated_at: new Date(),
+          });
+        }
       }
-    }
 
-    // 2. Invitation reminders
-    if (daysUntilEvent === event.invitationReminder) {
-      const invitations = await InvitationModel.findAll({
-        where: {
-          event_id: event.id,
-          status: 'pending',
-        },
-      });
-
-      for (const invitation of invitations) {
-        await NotificationModel.create({
-          userId: invitation.user_id,
-          title: 'Pending Invitation Reminder',
-          description: `You have not responded to the invitation for "${event.name}", which starts in ${event.invitationReminder} day(s).`,
-          isRead: false,
+      // 2. Invitation reminders
+      if (daysUntilEvent === event.invitationReminder) {
+        const invitations = await InvitationModel.findAll({
+          where: {
+            event_id: event.id,
+            status: 'pending',
+          },
         });
+
+        for (const invitation of invitations) {
+          notifications.push({
+            userId: invitation.user_id,
+            title: 'Pending Invitation Reminder',
+            description: `You have not responded to the invitation for "${event.name}", which starts in ${event.invitationReminder} day(s).`,
+            isRead: false,
+            eventId: event.id,
+            created_at: new Date(),
+            updated_at: new Date(),
+          });
+        }
       }
-    }
-  }
+
+      if (notifications.length > 0) {
+        await NotificationModel.bulkCreate(notifications);
+      }
+    }),
+  );
 };

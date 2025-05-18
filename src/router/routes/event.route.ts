@@ -15,6 +15,7 @@ import {
   getDiscussionsByEventIdController,
   getInvitationsByEventIdController,
   updateEventReminderController,
+  pingEventReminderController,
 } from 'modules/event/event.controller';
 
 const eventRouter = express.Router();
@@ -36,5 +37,7 @@ eventRouter.post('/:eventId/invitations/bulk', sendEventInvitationsController);
 eventRouter.get('/:eventId/requests', getRequestsByEventIdController);
 eventRouter.get('/:eventId/discussions', getDiscussionsByEventIdController);
 eventRouter.get('/:eventId/invitations', getInvitationsByEventIdController);
+
+eventRouter.post('/reminder', pingEventReminderController);
 
 export default eventRouter;
