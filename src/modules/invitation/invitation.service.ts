@@ -9,6 +9,7 @@ import { repo as userRepo } from 'modules/user/user.repo';
 import { DB } from 'databases/mysql';
 import { NotificationModel } from 'databases/mysql/models/notification.model';
 
+// Get a single invitation by ID
 export const getInvitationById = async (invitationId: string) => {
   const invitation = await invitationRepo.getById(invitationId);
 
@@ -19,8 +20,8 @@ export const getInvitationById = async (invitationId: string) => {
   return invitation;
 };
 
+// Get all invitations for a specific event
 export const getInvitationsByEvent = async (eventId: string) => {
-  // Check if event exists
   const event = await eventRepo.getById(eventId);
   if (!event) {
     throw new CustomError('Event not found', 404);
@@ -29,8 +30,8 @@ export const getInvitationsByEvent = async (eventId: string) => {
   return await invitationRepo.getByEventId(eventId);
 };
 
+// Get all invitations for a specific user
 export const getInvitationsByUser = async (userId: string) => {
-  // Check if user exists
   const user = await userRepo.getById(userId);
   if (!user) {
     throw new CustomError('User not found', 404);
@@ -39,20 +40,19 @@ export const getInvitationsByUser = async (userId: string) => {
   return await invitationRepo.getByUserId(userId);
 };
 
+// Create a new invitation and notify the invited user
 export const createInvitation = async (invitation: IInvitationRequest) => {
-  // Check if event exists
   const event = await eventRepo.getById(invitation.event_id);
   if (!event) {
     throw new CustomError('Event not found', 404);
   }
 
-  // Check if user exists
   const user = await userRepo.getById(invitation.user_id);
   if (!user) {
     throw new CustomError('User not found', 404);
   }
 
-  // Set status to PENDING if not provided
+  // Set default status to PENDING if not provided
   if (!invitation.status) {
     invitation.status = InvitationStatus.PENDING;
   }
@@ -73,10 +73,10 @@ export const createInvitation = async (invitation: IInvitationRequest) => {
   return created;
 };
 
+// Create multiple invitations in bulk
 export const bulkCreateInvitations = async (
   invitations: IInvitationRequest[],
 ) => {
-  // Set status to PENDING if not provided for each invitation
   const processedInvitations = invitations.map((invitation) => ({
     ...invitation,
     status: invitation.status || InvitationStatus.PENDING,
@@ -85,19 +85,15 @@ export const bulkCreateInvitations = async (
   return await invitationRepo.bulkCreate(processedInvitations);
 };
 
+// Accept an invitation and add the user to event participants
 export const acceptInvitation = async (invitationId: string) => {
   const invitation = await getInvitationById(invitationId);
 
   await DB.Invitations.update(
-    {
-      status: InvitationStatus.ACCEPTED,
-    },
-    {
-      where: { id: invitationId },
-    },
+    { status: InvitationStatus.ACCEPTED },
+    { where: { id: invitationId } },
   );
 
-  // Add user to event participants
   await DB.EventParticipants.create({
     event_id: invitation.event_id,
     user_id: invitation.user_id,
@@ -106,19 +102,17 @@ export const acceptInvitation = async (invitationId: string) => {
   return await getInvitationById(invitationId);
 };
 
+// Reject an invitation
 export const rejectInvitation = async (invitationId: string) => {
   await DB.Invitations.update(
-    {
-      status: InvitationStatus.REJECTED,
-    },
-    {
-      where: { id: invitationId },
-    },
+    { status: InvitationStatus.REJECTED },
+    { where: { id: invitationId } },
   );
 
   return await getInvitationById(invitationId);
 };
 
+// Delete an invitation
 export const deleteInvitation = async (invitationId: string) => {
   const invitation = await getInvitationById(invitationId);
 

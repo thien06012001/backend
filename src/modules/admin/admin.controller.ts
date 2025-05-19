@@ -10,6 +10,7 @@ import {
   updateUser,
 } from './admin.service';
 
+// Get all users
 export const getAllUserController = async (
   req: Request,
   res: Response,
@@ -23,6 +24,7 @@ export const getAllUserController = async (
   }
 };
 
+// Get a user by ID
 export const getUserByIdController = async (
   req: Request,
   res: Response,
@@ -36,6 +38,7 @@ export const getUserByIdController = async (
   }
 };
 
+// Delete a user by ID
 export const deleteUserController = async (
   req: Request,
   res: Response,
@@ -49,6 +52,7 @@ export const deleteUserController = async (
   }
 };
 
+// Update a user by ID
 export const updateUserController = async (
   req: Request,
   res: Response,
@@ -62,6 +66,7 @@ export const updateUserController = async (
   }
 };
 
+// Get all events
 export const getAllEventsController = async (
   req: Request,
   res: Response,
@@ -75,6 +80,7 @@ export const getAllEventsController = async (
   }
 };
 
+// Get an event by ID
 export const getEventByIdController = async (
   req: Request,
   res: Response,
@@ -88,6 +94,7 @@ export const getEventByIdController = async (
   }
 };
 
+// Delete an event by ID
 export const deleteEventController = async (
   req: Request,
   res: Response,
@@ -101,6 +108,7 @@ export const deleteEventController = async (
   }
 };
 
+// Update an event by ID
 export const updateEventController = async (
   req: Request,
   res: Response,

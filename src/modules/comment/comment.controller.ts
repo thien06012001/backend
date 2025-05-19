@@ -8,6 +8,7 @@ import {
   deleteComment,
 } from './comment.service';
 
+// Get a single comment by ID
 export const getCommentByIdController = async (
   req: Request,
   res: Response,
@@ -21,6 +22,7 @@ export const getCommentByIdController = async (
   }
 };
 
+// Get all comments for a specific post
 export const getCommentsByPostIdController = async (
   req: Request,
   res: Response,
@@ -34,6 +36,7 @@ export const getCommentsByPostIdController = async (
   }
 };
 
+// Get all comments made by a specific user
 export const getCommentsByUserIdController = async (
   req: Request,
   res: Response,
@@ -47,6 +50,7 @@ export const getCommentsByUserIdController = async (
   }
 };
 
+// Create a new comment
 export const createCommentController = async (
   req: Request,
   res: Response,
@@ -60,6 +64,7 @@ export const createCommentController = async (
   }
 };
 
+// Update an existing comment
 export const updateCommentController = async (
   req: Request,
   res: Response,
@@ -73,6 +78,7 @@ export const updateCommentController = async (
   }
 };
 
+// Delete a comment by ID
 export const deleteCommentController = async (
   req: Request,
   res: Response,

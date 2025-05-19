@@ -17,6 +17,7 @@ import {
   pingEventReminder,
 } from './event.service';
 
+// Get event by ID
 export const getEventByIdController = async (
   req: Request,
   res: Response,
@@ -30,6 +31,7 @@ export const getEventByIdController = async (
   }
 };
 
+// Get all public events
 export const getAllEventsController = async (
   req: Request,
   res: Response,
@@ -43,6 +45,7 @@ export const getAllEventsController = async (
   }
 };
 
+// Create a new event
 export const createEventController = async (
   req: Request,
   res: Response,
@@ -50,7 +53,6 @@ export const createEventController = async (
 ): Promise<void> => {
   try {
     console.log('Request body:', req.body);
-
     const response = await createEvent(req.body);
     console.log('Response:', response);
     res.status(201).json({ message: 'Event created', data: response });
@@ -59,6 +61,7 @@ export const createEventController = async (
   }
 };
 
+// Update an existing event
 export const updateEventController = async (
   req: Request,
   res: Response,
@@ -72,6 +75,7 @@ export const updateEventController = async (
   }
 };
 
+// Delete an event
 export const deleteEventController = async (
   req: Request,
   res: Response,
@@ -85,7 +89,7 @@ export const deleteEventController = async (
   }
 };
 
-// New controllers for event invitations
+// Send invitation to a single user
 export const sendEventInvitationController = async (
   req: Request,
   res: Response,
@@ -100,6 +104,7 @@ export const sendEventInvitationController = async (
   }
 };
 
+// Send invitations to multiple users
 export const sendEventInvitationsController = async (
   req: Request,
   res: Response,
@@ -118,6 +123,7 @@ export const sendEventInvitationsController = async (
   }
 };
 
+// Get all invitations for an event
 export const getEventInvitationsController = async (
   req: Request,
   res: Response,
@@ -133,6 +139,7 @@ export const getEventInvitationsController = async (
   }
 };
 
+// Leave an event as a participant
 export const leaveEventController = async (
   req: Request,
   res: Response,
@@ -147,6 +154,7 @@ export const leaveEventController = async (
   }
 };
 
+// Kick a user from an event
 export const kickUserFromEventController = async (
   req: Request,
   res: Response,
@@ -161,6 +169,7 @@ export const kickUserFromEventController = async (
   }
 };
 
+// Get all join requests for a specific event
 export const getRequestsByEventIdController = async (
   req: Request,
   res: Response,
@@ -175,6 +184,7 @@ export const getRequestsByEventIdController = async (
   }
 };
 
+// Get all discussions (posts and comments) for an event
 export const getDiscussionsByEventIdController = async (
   req: Request,
   res: Response,
@@ -189,6 +199,7 @@ export const getDiscussionsByEventIdController = async (
   }
 };
 
+// Get invitations by event ID (redundant alias support)
 export const getInvitationsByEventIdController = async (
   req: Request,
   res: Response,
@@ -203,6 +214,7 @@ export const getInvitationsByEventIdController = async (
   }
 };
 
+// Update event reminder settings
 export const updateEventReminderController = async (
   req: Request,
   res: Response,
@@ -212,7 +224,6 @@ export const updateEventReminderController = async (
     const { eventId } = req.params;
     const { participantReminder, invitationReminder } = req.body;
 
-    // Validate the input
     if (
       typeof participantReminder !== 'number' ||
       typeof invitationReminder !== 'number'
@@ -221,9 +232,9 @@ export const updateEventReminderController = async (
         message: 'Invalid input',
         data: null,
       });
+      return;
     }
 
-    // Update the event reminder
     const response = await updateEventReminders(
       eventId,
       participantReminder,
@@ -239,6 +250,7 @@ export const updateEventReminderController = async (
   }
 };
 
+// Trigger event reminder checks and dispatch notifications
 export const pingEventReminderController = async (
   req: Request,
   res: Response,

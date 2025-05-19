@@ -10,6 +10,7 @@ import {
   deleteInvitation,
 } from './invitation.service';
 
+// Get a single invitation by ID
 export const getInvitationByIdController = async (
   req: Request,
   res: Response,
@@ -25,6 +26,7 @@ export const getInvitationByIdController = async (
   }
 };
 
+// Get all invitations for a specific event
 export const getInvitationsByEventController = async (
   req: Request,
   res: Response,
@@ -40,6 +42,7 @@ export const getInvitationsByEventController = async (
   }
 };
 
+// Get all invitations for a specific user
 export const getInvitationsByUserController = async (
   req: Request,
   res: Response,
@@ -55,6 +58,7 @@ export const getInvitationsByUserController = async (
   }
 };
 
+// Create a new invitation
 export const createInvitationController = async (
   req: Request,
   res: Response,
@@ -68,6 +72,7 @@ export const createInvitationController = async (
   }
 };
 
+// Create multiple invitations in bulk
 export const bulkCreateInvitationsController = async (
   req: Request,
   res: Response,
@@ -81,6 +86,7 @@ export const bulkCreateInvitationsController = async (
   }
 };
 
+// Accept an invitation
 export const acceptInvitationController = async (
   req: Request,
   res: Response,
@@ -94,6 +100,7 @@ export const acceptInvitationController = async (
   }
 };
 
+// Reject an invitation
 export const rejectInvitationController = async (
   req: Request,
   res: Response,
@@ -107,6 +114,7 @@ export const rejectInvitationController = async (
   }
 };
 
+// Delete an invitation
 export const deleteInvitationController = async (
   req: Request,
   res: Response,

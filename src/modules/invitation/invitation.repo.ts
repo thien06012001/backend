@@ -6,6 +6,7 @@ import {
 } from 'interfaces/invitation.interface';
 
 export const invitationRepo = {
+  // Get a single invitation by its ID with user and event included
   getById: async (invitationId: string): Promise<Invitation | null> => {
     await DB.sequelize.sync();
     return await DB.Invitations.findOne({
@@ -17,6 +18,7 @@ export const invitationRepo = {
     });
   },
 
+  // Get all invitations for a specific event, include user info
   getByEventId: async (eventId: string): Promise<Invitation[]> => {
     await DB.sequelize.sync();
     return await DB.Invitations.findAll({
@@ -27,6 +29,7 @@ export const invitationRepo = {
     });
   },
 
+  // Get all invitations for a specific user, include event info
   getByUserId: async (userId: string): Promise<Invitation[]> => {
     await DB.sequelize.sync();
     return await DB.Invitations.findAll({
@@ -35,6 +38,7 @@ export const invitationRepo = {
     });
   },
 
+  // Create a new invitation with default status as PENDING
   create: async (invitation: IInvitationRequest): Promise<Invitation> => {
     await DB.sequelize.sync();
     return await DB.Invitations.create({
@@ -43,6 +47,7 @@ export const invitationRepo = {
     });
   },
 
+  // Create multiple invitations in bulk with default status
   bulkCreate: async (
     invitations: IInvitationRequest[],
   ): Promise<Invitation[]> => {
@@ -54,6 +59,7 @@ export const invitationRepo = {
     return await DB.Invitations.bulkCreate(invitationsWithDefaults);
   },
 
+  // Update the status of a specific invitation
   updateStatus: async (
     invitationId: string,
     status: InvitationStatus,
@@ -68,6 +74,7 @@ export const invitationRepo = {
     );
   },
 
+  // Delete an invitation by its ID
   delete: async (invitationId: string): Promise<number> => {
     await DB.sequelize.sync();
     return await DB.Invitations.destroy({ where: { id: invitationId } });

@@ -3,9 +3,19 @@ import { IRequest, Request } from 'interfaces/request.interface';
 
 export const requestRepo = {
   // Create a new join request for an event
-  create: async (post: IRequest): Promise<Request> => {
+  create: async (request: IRequest): Promise<Request> => {
     await DB.sequelize.sync();
-    return await DB.Requests.create({ ...post });
+    return await DB.Requests.create({ ...request });
+  },
+  // Get all request for a specific event and user
+  findByEventAndUser: async (
+    eventId: string,
+    userId: string,
+  ): Promise<Request | null> => {
+    await DB.sequelize.sync();
+    return await DB.Requests.findOne({
+      where: { eventId, userId },
+    });
   },
 
   // Cancel (delete) a request by userId and eventId

@@ -6,8 +6,17 @@ import { DB } from 'databases/mysql';
 import { CustomError } from 'utils/error.custom';
 
 // Create a new request to join an event
-export const createRequest = async (post: IRequest): Promise<Request> => {
-  return await requestRepo.create(post);
+export const createRequest = async (request: IRequest): Promise<Request> => {
+  const { eventId, userId } = request;
+
+  // Check if a request from the user to the event already exists
+  const existingRequest = await requestRepo.findByEventAndUser(eventId, userId);
+
+  if (existingRequest) {
+    throw new CustomError('You have already sent a request to this event.', 409);
+  }
+  
+  return await requestRepo.create(request);
 };
 
 // Cancel a user's request to join a specific event

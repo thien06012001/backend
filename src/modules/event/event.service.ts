@@ -7,33 +7,32 @@ import { InvitationStatus } from 'interfaces/invitation.interface';
 import { repo } from 'modules/user/user.repo';
 import { DB } from 'databases/mysql';
 import { getSettings } from 'modules/setting/setting.service';
-import { Op, where } from 'sequelize';
+import { Op } from 'sequelize';
 import { EventModel } from 'databases/mysql/models/event.model';
 import { EventParticipantModel } from 'databases/mysql/models/eventParticipant.model';
 import { InvitationModel } from 'databases/mysql/models/invitation.model';
 import { NotificationModel } from 'databases/mysql/models/notification.model';
 
+// Get a single event by ID
 export const getEventById = async (eventId: string) => {
   const event = await eventRepo.getById(eventId);
-
-  if (!event) {
-    throw new CustomError('Event not found', 404);
-  }
-
+  if (!event) throw new CustomError('Event not found', 404);
   return event;
 };
 
+// Get all events
 export const getAllEvents = async () => {
   return await eventRepo.getAll();
 };
 
+// Create a new event with validation and capacity checks
 export const createEvent = async (event: IEventRequest) => {
   const userId = event.owner_id;
-
   const startTime = new Date(event.start_time);
   const endTime = new Date(event.end_time);
   const now = new Date();
 
+  // Validate time inputs
   if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
     throw new CustomError('Invalid start or end time format.', 400);
   }
@@ -46,6 +45,7 @@ export const createEvent = async (event: IEventRequest) => {
     throw new CustomError('End time must be after start time.', 400);
   }
 
+  // Check active events for the user
   const currentEvents = await DB.Events.findAll({
     where: {
       owner_id: userId,
@@ -57,9 +57,8 @@ export const createEvent = async (event: IEventRequest) => {
   });
 
   const settings = await getSettings();
-  const activeEvents = currentEvents.length;
 
-  if (activeEvents >= settings.maxActiveEvents) {
+  if (currentEvents.length >= settings.maxActiveEvents) {
     throw new CustomError(
       `You can only create up to ${settings.maxActiveEvents} active events.`,
       400,
@@ -76,14 +75,11 @@ export const createEvent = async (event: IEventRequest) => {
   return await eventRepo.create(event);
 };
 
+// Update an event and notify all participants
 export const updateEvent = async (eventId: string, event: IEventRequest) => {
   const [updated] = await eventRepo.update(eventId, event);
+  if (!updated) throw new CustomError('Event not found', 404);
 
-  if (!updated) {
-    throw new CustomError('Event not found', 404);
-  }
-
-  // Fetch all participants of the event
   const participants = await EventParticipantModel.findAll({
     where: { event_id: eventId },
   });
@@ -98,35 +94,24 @@ export const updateEvent = async (eventId: string, event: IEventRequest) => {
     updated_at: new Date().toISOString(),
   }));
 
-  // Create notifications in bulk
   await NotificationModel.bulkCreate(notifications);
-
   return event;
 };
 
+// Delete an event by ID
 export const deleteEvent = async (eventId: string) => {
   const deleted = await eventRepo.delete(eventId);
-
-  if (!deleted) {
-    throw new CustomError('Event not found', 404);
-  }
-
+  if (!deleted) throw new CustomError('Event not found', 404);
   return deleted;
 };
 
-// New methods for invitation functionality
+// Send invitation to one user via email
 export const sendEventInvitation = async (eventId: string, email: string) => {
   const user = await repo.getByEmail(email);
-
   const event = await eventRepo.getById(eventId);
 
-  if (!event) {
-    throw new CustomError('Event not found', 404);
-  }
-
-  if (!user) {
-    throw new CustomError('User not found', 404);
-  }
+  if (!event) throw new CustomError('Event not found', 404);
+  if (!user) throw new CustomError('User not found', 404);
 
   await notificationRepo.create({
     description: `invited you to event ${event.name}`,
@@ -136,7 +121,6 @@ export const sendEventInvitation = async (eventId: string, email: string) => {
     eventId: event.id,
   });
 
-  // Create invitation
   return await invitationRepo.create({
     event_id: eventId,
     user_id: user.id,
@@ -144,12 +128,12 @@ export const sendEventInvitation = async (eventId: string, email: string) => {
   });
 };
 
+// Send invitations to multiple users
 export const sendEventInvitations = async (
   eventId: string,
   userIds: string[],
   message?: string,
 ) => {
-  // Create invitations for all users
   const invitations = userIds.map((userId) => ({
     event_id: eventId,
     user_id: userId,
@@ -160,28 +144,25 @@ export const sendEventInvitations = async (
   return await invitationRepo.bulkCreate(invitations);
 };
 
+// Get all invitations for an event
 export const getEventInvitations = async (eventId: string) => {
   return await invitationRepo.getByEventId(eventId);
 };
 
+// Leave an event (remove self as participant)
 export const leaveEvent = async (eventId: string, userId: string) => {
-  // Remove user from participants
   await eventRepo.removeParticipant(eventId, userId);
-
   return { message: 'User left the event successfully' };
 };
 
+// Kick a user from an event
 export const kickUserFromEvent = async (eventId: string, userId: string) => {
-  // Remove user from participants
   const removed = await eventRepo.removeParticipant(eventId, userId);
-
-  if (!removed) {
-    throw new CustomError('User not found in event', 404);
-  }
-
+  if (!removed) throw new CustomError('User not found in event', 404);
   return { message: 'User kicked from the event successfully' };
 };
 
+// Get pending join requests for a specific event
 export const getRequestsByEventId = async (eventId: string) => {
   return await DB.Requests.findAll({
     where: {
@@ -198,6 +179,7 @@ export const getRequestsByEventId = async (eventId: string) => {
   });
 };
 
+// Get all discussions (posts & comments) for an event
 export const getDiscussionsByEventId = async (eventId: string) => {
   return await DB.Posts.findAll({
     where: {
@@ -220,45 +202,45 @@ export const getDiscussionsByEventId = async (eventId: string) => {
   });
 };
 
+// Alias for getEventInvitations (can be removed if redundant)
 export const getInvitationsByEventId = async (eventId: string) => {
   return await invitationRepo.getByEventId(eventId);
 };
 
+// Update reminder settings for an event
 export const updateEventReminders = async (
   eventId: string,
   participantReminder: number,
   invitationReminder: number,
 ) => {
   const event = await eventRepo.getById(eventId);
-
-  if (!event) {
-    throw new CustomError('Event not found', 404);
-  }
+  if (!event) throw new CustomError('Event not found', 404);
 
   await DB.Events.update(
     {
       invitationReminder,
       participantReminder,
     },
-    {
-      where: { id: eventId },
-    },
+    { where: { id: eventId } },
   );
 
   return event;
 };
 
+// Helper to calculate date difference in days
 const calculateDaysUntil = (from: Date, to: Date) => {
   const start = new Date(from.getFullYear(), from.getMonth(), from.getDate());
   const end = new Date(to.getFullYear(), to.getMonth(), to.getDate());
-
   const msPerDay = 1000 * 60 * 60 * 24;
   return Math.floor((end.getTime() - start.getTime()) / msPerDay);
 };
 
+// Ping events for reminder notifications
 export const pingEventReminder = async () => {
+  // Get the current date
   const today = new Date();
 
+  // Fetch all events that haven't started yet
   const events = await EventModel.findAll({
     where: {
       start_time: {
@@ -267,8 +249,10 @@ export const pingEventReminder = async () => {
     },
   });
 
+  // Iterate through each upcoming event
   await Promise.all(
     events.map(async (event) => {
+      // Calculate how many days remain until the event starts
       const daysUntilEvent = calculateDaysUntil(
         new Date(event.start_time),
         today,
@@ -276,14 +260,14 @@ export const pingEventReminder = async () => {
 
       const notifications: any[] = [];
 
-      // 1. Participant reminders
+      // If today matches the participant reminder offset
       if (daysUntilEvent === event.participantReminder) {
+        // Fetch all participants of this event
         const participants = await EventParticipantModel.findAll({
-          where: {
-            event_id: event.id,
-          },
+          where: { event_id: event.id },
         });
 
+        // Create a reminder notification for each participant
         for (const participant of participants) {
           notifications.push({
             userId: participant.user_id,
@@ -297,8 +281,9 @@ export const pingEventReminder = async () => {
         }
       }
 
-      // 2. Invitation reminders
+      // If today matches the invitation reminder offset
       if (daysUntilEvent === event.invitationReminder) {
+        // Fetch all pending invitations for this event
         const invitations = await InvitationModel.findAll({
           where: {
             event_id: event.id,
@@ -306,6 +291,7 @@ export const pingEventReminder = async () => {
           },
         });
 
+        // Create a reminder notification for each invited user
         for (const invitation of invitations) {
           notifications.push({
             userId: invitation.user_id,
@@ -319,6 +305,8 @@ export const pingEventReminder = async () => {
         }
       }
 
+      // ========== Send Notifications ==========
+      // Only insert notifications if we have any to send
       if (notifications.length > 0) {
         await NotificationModel.bulkCreate(notifications);
       }

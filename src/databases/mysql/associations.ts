@@ -19,139 +19,135 @@ export const setupAssociations = (models: {
     RequestModel,
   } = models;
 
-  // User to Event (owner) relationship
+  // A user can own many events
   UserModel.hasMany(EventModel, {
     foreignKey: 'owner_id',
     as: 'ownedEvents',
   });
 
-  // Event to User (owner) relationship
+  // An event is owned by a single user
   EventModel.belongsTo(UserModel, {
     foreignKey: 'owner_id',
     as: 'owner',
   });
 
-  // User to Event (participants) relationship - through EventParticipant
+  // A user can participate in many events
   UserModel.belongsToMany(EventModel, {
     through: EventParticipantModel,
     foreignKey: 'user_id',
     as: 'participatingEvents',
   });
 
-  // Event to User (participants) relationship - through EventParticipant
+  // An event can have many user participants
   EventModel.belongsToMany(UserModel, {
     through: EventParticipantModel,
     foreignKey: 'event_id',
     as: 'participants',
   });
 
-  // // User to Event (invitations) relationship - through Invitation
-  // UserModel.belongsToMany(EventModel, {
-  //   through: InvitationModel,
-  //   foreignKey: 'user_id',
-  //   otherKey: 'event_id',
-  //   as: 'invitedEvents',
-  // });
-
-  // // Event to User (invitations) relationship - through Invitation
-  // EventModel.belongsToMany(UserModel, {
-  //   through: InvitationModel,
-  //   foreignKey: 'event_id',
-  //   otherKey: 'user_id',
-  //   as: 'invitedUsers',
-  // });
-
-  // Direct access to the invitation model (the join table)
+  // Invitation belongs to a user
   InvitationModel.belongsTo(UserModel, {
     foreignKey: 'user_id',
     as: 'user',
   });
 
+  // Invitation belongs to an event
   InvitationModel.belongsTo(EventModel, {
     foreignKey: 'event_id',
     as: 'event',
   });
 
-  // For easier access to invitations from user/event
+  // A user can have many invitations
   UserModel.hasMany(InvitationModel, {
     foreignKey: 'user_id',
     as: 'invitations',
   });
 
+  // An event can have many invitations
   EventModel.hasMany(InvitationModel, {
     foreignKey: 'event_id',
     as: 'invitations',
   });
 
-  // Post relationships
+  // An event can have many posts
   EventModel.hasMany(PostModel, {
     foreignKey: 'event_id',
     as: 'posts',
   });
 
+  // A post belongs to an event
   PostModel.belongsTo(EventModel, {
     foreignKey: 'event_id',
     as: 'event',
   });
 
+  // A user can author many posts
   UserModel.hasMany(PostModel, {
     foreignKey: 'user_id',
     as: 'posts',
   });
 
-  // Post belongs to User
+  // A post belongs to an author (user)
   PostModel.belongsTo(UserModel, {
     foreignKey: 'user_id',
     as: 'author',
   });
 
-  // Comment relationships
+  // A post can have many comments
   PostModel.hasMany(CommentModel, {
     foreignKey: 'post_id',
     as: 'comments',
   });
 
+  // A comment belongs to a post
   CommentModel.belongsTo(PostModel, {
     foreignKey: 'post_id',
     as: 'post',
   });
 
+  // A user can write many comments
   UserModel.hasMany(CommentModel, {
     foreignKey: 'user_id',
     as: 'comments',
   });
 
+  // A comment belongs to a user
   CommentModel.belongsTo(UserModel, {
     foreignKey: 'user_id',
     as: 'user',
   });
 
-  // Notification relationships
+  // A user can receive many notifications
   UserModel.hasMany(NotificationModel, {
     foreignKey: 'user_id',
     as: 'notifications',
   });
 
+  // A notification belongs to a user
   NotificationModel.belongsTo(UserModel, {
     foreignKey: 'user_id',
     as: 'user',
   });
 
+  // A user can make many event join requests
   UserModel.hasMany(RequestModel, {
     foreignKey: 'user_id',
     as: 'requests',
   });
 
+  // A request belongs to a user
   RequestModel.belongsTo(UserModel, {
     foreignKey: 'user_id',
     as: 'user',
   });
 
+  // An event can receive many requests
   EventModel.hasMany(RequestModel, {
     foreignKey: 'event_id',
     as: 'requests',
   });
 
+  // A request belongs to an event
   RequestModel.belongsTo(EventModel, {
     foreignKey: 'event_id',
     as: 'event',

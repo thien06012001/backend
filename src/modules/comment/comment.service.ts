@@ -4,6 +4,7 @@ import { ICommentRequest } from 'interfaces/comment.interface';
 import { postRepo } from 'modules/post/post.repo';
 import { repo as userRepo } from 'modules/user/user.repo';
 
+// Get a comment by its ID
 export const getCommentById = async (commentId: string) => {
   const comment = await commentRepo.getById(commentId);
 
@@ -14,6 +15,7 @@ export const getCommentById = async (commentId: string) => {
   return comment;
 };
 
+// Get all comments under a specific post
 export const getCommentsByPostId = async (postId: string) => {
   // Check if post exists
   const post = await postRepo.getById(postId);
@@ -24,6 +26,7 @@ export const getCommentsByPostId = async (postId: string) => {
   return await commentRepo.getByPostId(postId);
 };
 
+// Get all comments made by a specific user
 export const getCommentsByUserId = async (userId: string) => {
   // Check if user exists
   const user = await userRepo.getById(userId);
@@ -34,6 +37,7 @@ export const getCommentsByUserId = async (userId: string) => {
   return await commentRepo.getByUserId(userId);
 };
 
+// Create a new comment under a post
 export const createComment = async (comment: ICommentRequest) => {
   // Check if post exists
   const post = await postRepo.getById(comment.postId);
@@ -50,13 +54,11 @@ export const createComment = async (comment: ICommentRequest) => {
   return await commentRepo.create(comment);
 };
 
+// Update an existing comment
 export const updateComment = async (
   commentId: string,
   comment: Partial<ICommentRequest>,
 ) => {
-  // Check if comment exists
-  const existingComment = await getCommentById(commentId);
-
   const [updated] = await commentRepo.update(commentId, comment);
 
   if (!updated) {
@@ -66,6 +68,7 @@ export const updateComment = async (
   return await getCommentById(commentId);
 };
 
+// Delete a comment by ID
 export const deleteComment = async (commentId: string) => {
   const comment = await getCommentById(commentId);
 

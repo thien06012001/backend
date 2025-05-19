@@ -2,6 +2,7 @@ import { DB } from 'databases/mysql';
 import { IEventRequest, Event } from 'interfaces/event.interface';
 
 export const eventRepo = {
+  // Get an event by its ID, including participants and requests
   getById: async (eventId: string): Promise<Event | null> => {
     await DB.sequelize.sync();
     return await DB.Events.findOne({
@@ -21,9 +22,9 @@ export const eventRepo = {
     });
   },
 
+  // Get all public events with owner, participants, and requests info
   getAll: async (): Promise<Event[]> => {
     await DB.sequelize.sync();
-
     return await DB.Events.findAll({
       include: [
         { model: DB.Users, as: 'owner', attributes: ['id', 'email'] },
@@ -47,6 +48,7 @@ export const eventRepo = {
     });
   },
 
+  // Create a new event with default reminder values
   create: async (event: IEventRequest): Promise<Event> => {
     await DB.sequelize.sync();
     return await DB.Events.create({
@@ -56,16 +58,19 @@ export const eventRepo = {
     });
   },
 
+  // Update an event by ID
   update: async (eventId: string, event: IEventRequest): Promise<[number]> => {
     await DB.sequelize.sync();
     return await DB.Events.update(event, { where: { id: eventId } });
   },
 
+  // Delete an event by ID
   delete: async (eventId: string): Promise<number> => {
     await DB.sequelize.sync();
     return await DB.Events.destroy({ where: { id: eventId } });
   },
 
+  // Remove a participant from an event
   removeParticipant: async (
     eventId: string,
     userId: string,
@@ -79,6 +84,7 @@ export const eventRepo = {
     });
   },
 
+  // Add a participant to an event
   addParticipant: async (eventId: string, userId: string) => {
     await DB.sequelize.sync();
     return await DB.EventParticipants.create({
