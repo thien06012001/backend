@@ -21,7 +21,28 @@ export const getEventById = async (eventId: string) => {
 };
 
 // Get all events
-export const getAllEvents = async () => {
+export const getAllEvents = async (role: string) => {
+  if (role === 'admin') {
+    return await DB.Events.findAll({
+      include: [
+        { model: DB.Users, as: 'owner', attributes: ['id', 'email'] },
+        {
+          model: DB.Users,
+          as: 'participants',
+          attributes: ['id'],
+          required: false,
+        },
+        {
+          model: DB.Requests,
+          as: 'requests',
+          attributes: ['id', 'user_id', 'event_id', 'status'],
+          required: false,
+        },
+      ],
+      attributes: ['id', 'name', 'start_time', 'end_time', 'location'],
+    });
+  }
+
   return await eventRepo.getAll();
 };
 

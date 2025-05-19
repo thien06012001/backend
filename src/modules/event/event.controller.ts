@@ -38,7 +38,8 @@ export const getAllEventsController = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const response = await getAllEvents();
+    const role = req.query.role;
+    const response = await getAllEvents(role as string);
     res.status(200).json({ message: 'All events fetched', data: response });
   } catch (error) {
     next(error);
