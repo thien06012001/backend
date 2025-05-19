@@ -40,15 +40,20 @@ yarn install
 3. Create a `.env.development` file in the root directory with the following content (example):
 
 ```env
-MYSQL_DB_NAME=your_mysql_db_name
-MYSQL_DB_USER=your_mysql_username
-MYSQL_DB_PASSWORD=your_mysql_password
-MYSQL_DB_HOST=localhost
-MYSQL_DB_PORT=3306
-
-MONGO_DB_URI=mongodb://localhost:27017/your-db
-SECRET_KEY=your_secret_key
-PORT=5000
+# Server env
+ PORT = 5000
+ NODE_ENV = development
+ HOST_NAME = localhost
+# Database env
+ DB_PORT = 3306
+ DB_USERNAME = <your-db-username>
+ DB_PASSWORD = <your-db-password>
+ DB_NAME = <your-db-name>
+ DB_HOST = localhost
+ DB_DIALECT = mysql
+# Mongodb env
+ MONGO_URI = <your-mongdb-uri>
+ SECRET_KEY= <your-secret-key>
 ```
 
 ### Development

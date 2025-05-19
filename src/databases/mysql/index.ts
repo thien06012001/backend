@@ -28,7 +28,7 @@ const sequelize = new Sequelize.Sequelize(
   DB_USERNAME as string,
   DB_PASSWORD,
   {
-    dialect: (DB_DIALECT as Sequelize.Dialect) || 'postgres',
+    dialect: (DB_DIALECT as Sequelize.Dialect) || 'mysql',
     host: DB_HOST,
     port: parseInt(DB_PORT as string, 10),
     timezone: '+09:00',
