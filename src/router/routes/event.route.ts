@@ -28,16 +28,12 @@ eventRouter.delete('/:eventId', deleteEventController);
 eventRouter.post('/:eventId/leave', leaveEventController);
 eventRouter.post('/:eventId/kick', kickUserFromEventController);
 eventRouter.put('/:eventId/reminder', updateEventReminderController);
-
-// Event invitation routes
 eventRouter.get('/:eventId/invitations', getEventInvitationsController);
 eventRouter.post('/:eventId/invitations', sendEventInvitationController);
 eventRouter.post('/:eventId/invitations/bulk', sendEventInvitationsController);
-
 eventRouter.get('/:eventId/requests', getRequestsByEventIdController);
 eventRouter.get('/:eventId/discussions', getDiscussionsByEventIdController);
 eventRouter.get('/:eventId/invitations', getInvitationsByEventIdController);
-
 eventRouter.post('/reminder', pingEventReminderController);
 
 export default eventRouter;

@@ -8,6 +8,7 @@ import {
   deletePost,
 } from './post.service';
 
+// Controller: Get a specific post by its ID
 export const getPostByIdController = async (
   req: Request,
   res: Response,
@@ -21,6 +22,7 @@ export const getPostByIdController = async (
   }
 };
 
+// Controller: Get all posts for a specific event
 export const getPostsByEventIdController = async (
   req: Request,
   res: Response,
@@ -34,6 +36,7 @@ export const getPostsByEventIdController = async (
   }
 };
 
+// Controller: Get all posts in the system
 export const getAllPostsController = async (
   req: Request,
   res: Response,
@@ -47,6 +50,7 @@ export const getAllPostsController = async (
   }
 };
 
+// Controller: Create a new post
 export const createPostController = async (
   req: Request,
   res: Response,
@@ -60,6 +64,7 @@ export const createPostController = async (
   }
 };
 
+// Controller: Update an existing post
 export const updatePostController = async (
   req: Request,
   res: Response,
@@ -73,6 +78,7 @@ export const updatePostController = async (
   }
 };
 
+// Controller: Delete a post
 export const deletePostController = async (
   req: Request,
   res: Response,

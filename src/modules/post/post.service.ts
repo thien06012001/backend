@@ -3,6 +3,7 @@ import { postRepo } from './post.repo';
 import { IPostRequest } from 'interfaces/post.interface';
 import { eventRepo } from 'modules/event/event.repo';
 
+// Get a post by its ID
 export const getPostById = async (postId: string) => {
   const post = await postRepo.getById(postId);
 
@@ -13,9 +14,10 @@ export const getPostById = async (postId: string) => {
   return post;
 };
 
+// Get all posts related to a specific event
 export const getPostsByEventId = async (eventId: string) => {
-  // Check if event exists
   const event = await eventRepo.getById(eventId);
+
   if (!event) {
     throw new CustomError('Event not found', 404);
   }
@@ -23,12 +25,13 @@ export const getPostsByEventId = async (eventId: string) => {
   return await postRepo.getByEventId(eventId);
 };
 
+// Get all posts across all events
 export const getAllPosts = async () => {
   return await postRepo.getAll();
 };
 
+// Create a new post, but ensure the target event exists first
 export const createPost = async (post: IPostRequest) => {
-  // Check if event exists
   const event = await eventRepo.getById(post.eventId);
 
   if (!event) {
@@ -38,12 +41,12 @@ export const createPost = async (post: IPostRequest) => {
   return await postRepo.create(post);
 };
 
+// Update a post by ID with partial data
 export const updatePost = async (
   postId: string,
   post: Partial<IPostRequest>,
 ) => {
-  // Check if post exists
-  const existingPost = await getPostById(postId);
+  await getPostById(postId);
 
   const [updated] = await postRepo.update(postId, post);
 
@@ -51,11 +54,13 @@ export const updatePost = async (
     throw new CustomError('Failed to update post', 500);
   }
 
+  // Return the updated post data
   return await getPostById(postId);
 };
 
+// Delete a post by ID after verifying its existence
 export const deletePost = async (postId: string) => {
-  const post = await getPostById(postId);
+  await getPostById(postId);
 
   const deleted = await postRepo.delete(postId);
 

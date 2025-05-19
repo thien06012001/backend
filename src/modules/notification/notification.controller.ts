@@ -11,6 +11,7 @@ import {
   deleteAllNotificationsByUserId,
 } from './notification.service';
 
+// Get a single notification by ID
 export const getNotificationByIdController = async (
   req: Request,
   res: Response,
@@ -26,6 +27,7 @@ export const getNotificationByIdController = async (
   }
 };
 
+// Get all notifications for a specific user
 export const getNotificationsByUserIdController = async (
   req: Request,
   res: Response,
@@ -41,6 +43,7 @@ export const getNotificationsByUserIdController = async (
   }
 };
 
+// Get unread notifications for a specific user
 export const getUnreadNotificationsByUserIdController = async (
   req: Request,
   res: Response,
@@ -56,6 +59,7 @@ export const getUnreadNotificationsByUserIdController = async (
   }
 };
 
+// Create a new notification
 export const createNotificationController = async (
   req: Request,
   res: Response,
@@ -69,6 +73,7 @@ export const createNotificationController = async (
   }
 };
 
+// Create multiple notifications in bulk
 export const bulkCreateNotificationsController = async (
   req: Request,
   res: Response,
@@ -82,6 +87,7 @@ export const bulkCreateNotificationsController = async (
   }
 };
 
+// Mark a notification as read
 export const markNotificationAsReadController = async (
   req: Request,
   res: Response,
@@ -97,6 +103,7 @@ export const markNotificationAsReadController = async (
   }
 };
 
+// Mark all notifications as read for a user
 export const markAllNotificationsAsReadController = async (
   req: Request,
   res: Response,
@@ -112,6 +119,7 @@ export const markAllNotificationsAsReadController = async (
   }
 };
 
+// Delete a single notification by ID
 export const deleteNotificationController = async (
   req: Request,
   res: Response,
@@ -125,6 +133,7 @@ export const deleteNotificationController = async (
   }
 };
 
+// Delete all notifications for a specific user
 export const deleteAllNotificationsByUserIdController = async (
   req: Request,
   res: Response,

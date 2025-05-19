@@ -5,6 +5,7 @@ import {
 } from 'interfaces/notification.interface';
 
 export const notificationRepo = {
+  // Get a notification by ID (includes user info)
   getById: async (notificationId: string): Promise<Notification | null> => {
     await DB.sequelize.sync();
     return await DB.Notifications.findOne({
@@ -13,6 +14,7 @@ export const notificationRepo = {
     });
   },
 
+  // Get all notifications for a user (most recent first)
   getByUserId: async (userId: string): Promise<Notification[]> => {
     await DB.sequelize.sync();
     return await DB.Notifications.findAll({
@@ -21,6 +23,7 @@ export const notificationRepo = {
     });
   },
 
+  // Get unread notifications for a user (most recent first)
   getUnreadByUserId: async (userId: string): Promise<Notification[]> => {
     await DB.sequelize.sync();
     return await DB.Notifications.findAll({
@@ -32,6 +35,7 @@ export const notificationRepo = {
     });
   },
 
+  // Create a new notification (defaults isRead to false)
   create: async (notification: INotificationRequest): Promise<Notification> => {
     await DB.sequelize.sync();
     return await DB.Notifications.create({
@@ -40,6 +44,7 @@ export const notificationRepo = {
     });
   },
 
+  // Bulk create multiple notifications (defaults isRead to false)
   bulkCreate: async (
     notifications: INotificationRequest[],
   ): Promise<Notification[]> => {
@@ -52,6 +57,7 @@ export const notificationRepo = {
     );
   },
 
+  // Mark a single notification as read
   markAsRead: async (notificationId: string): Promise<[number]> => {
     await DB.sequelize.sync();
     return await DB.Notifications.update(
@@ -60,6 +66,7 @@ export const notificationRepo = {
     );
   },
 
+  // Mark all unread notifications for a user as read
   markAllAsRead: async (userId: string): Promise<[number]> => {
     await DB.sequelize.sync();
     return await DB.Notifications.update(
@@ -73,11 +80,13 @@ export const notificationRepo = {
     );
   },
 
+  // Delete a single notification by ID
   delete: async (notificationId: string): Promise<number> => {
     await DB.sequelize.sync();
     return await DB.Notifications.destroy({ where: { id: notificationId } });
   },
 
+  // Delete all notifications for a specific user
   deleteAllByUserId: async (userId: string): Promise<number> => {
     await DB.sequelize.sync();
     return await DB.Notifications.destroy({ where: { userId } });

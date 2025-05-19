@@ -13,6 +13,7 @@ import settingRouter from './routes/setting.route';
 
 const router = express.Router();
 
+// Mount all routers under corresponding API paths
 router.use('/users', userRouter);
 router.use('/auth', authRouter);
 router.use('/events', eventRouter);

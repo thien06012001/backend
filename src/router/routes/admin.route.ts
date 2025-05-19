@@ -17,7 +17,6 @@ adminRouter.get('/users/all', getAllUserController);
 adminRouter.get('/users/:userId', getUserByIdController);
 adminRouter.delete('/users/:userId', deleteUserController);
 adminRouter.put('/users/:userId', updateUserController);
-
 adminRouter.get('/events/all', getAllEventsController);
 adminRouter.get('/events/:eventId', getEventByIdController);
 adminRouter.delete('/events/:eventId', deleteEventController);

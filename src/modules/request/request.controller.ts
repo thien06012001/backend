@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-
 import {
   cancelRequest,
   createRequest,
@@ -7,6 +6,7 @@ import {
   rejectRequest,
 } from './request.service';
 
+// Controller: Handle creation of a new request to join an event
 export const createRequestController = async (
   req: Request,
   res: Response,
@@ -20,6 +20,7 @@ export const createRequestController = async (
   }
 };
 
+// Controller: Cancel a request using eventId and userId from query parameters
 export const cancelRequestController = async (
   req: Request,
   res: Response,
@@ -27,6 +28,8 @@ export const cancelRequestController = async (
 ): Promise<void> => {
   try {
     const { eventId, userId } = req.query;
+
+    // Cancel the request by user and event ID
     await cancelRequest(eventId as string, userId as string);
     res.status(200).json({ message: 'Request cancelled' });
   } catch (error) {
@@ -34,6 +37,7 @@ export const cancelRequestController = async (
   }
 };
 
+// Controller: Approve a request by request ID
 export const approveRequestController = async (
   req: Request,
   res: Response,
@@ -41,6 +45,7 @@ export const approveRequestController = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
+
     await approveRequest(id);
     res.status(200).json({ message: 'Request approved' });
   } catch (error) {
@@ -48,6 +53,7 @@ export const approveRequestController = async (
   }
 };
 
+// Controller: Reject a request by request ID
 export const rejectRequestController = async (
   req: Request,
   res: Response,
@@ -55,6 +61,7 @@ export const rejectRequestController = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
+
     await rejectRequest(id);
     res.status(200).json({ message: 'Request rejected' });
   } catch (error) {
