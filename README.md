@@ -25,7 +25,7 @@ This is the backend for your web application, built with:
 1. Clone the repository:
 
 ```bash
-git clone <your-backend-repo-url>
+git clone https://github.com/thien06012001/backend.git
 cd backend
 ```
 
